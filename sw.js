@@ -1,6 +1,6 @@
 // Guarda la app en el teléfono para que funcione sin internet en el gimnasio.
-// 51b46df6fe lo reemplaza scripts/build.py con un hash del index.html: cada build nuevo actualiza los teléfonos.
-const CACHE = "gym-51b46df6fe";
+// 5707a868ab lo reemplaza scripts/build.py con un hash del index.html: cada build nuevo actualiza los teléfonos.
+const CACHE = "gym-5707a868ab";
 const FILES = ["./", "./index.html", "./manifest.json",
   "./icon-192.png", "./icon-512.png", "./maskable-512.png", "./apple-touch-icon.png", "./favicon.png", "./instalar.html", "./qr.svg"];
 

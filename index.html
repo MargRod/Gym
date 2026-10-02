@@ -22,7 +22,7 @@
 :root{
   --bg:#F2F2F7; --card:#FFFFFF; --text:#000000; --text2:#6E6E73; --text3:#AEAEB2;
   --sep:rgba(60,60,67,.16); --fill:rgba(118,118,128,.12); --fill2:rgba(118,118,128,.2);
-  --accent:#F2541B; --accent2:#FF8A3D; --accent-soft:rgba(242,84,27,.12); --on-accent:#FFFFFF; --fig:#0A6CD6; --mus:#D9D9E0; --mus-j:#ECECF1; --mus-s:#FFB892;
+  --accent:#F2541B; --accent2:#FF8A3D; --accent-soft:rgba(242,84,27,.12); --on-accent:#FFFFFF; --fig:#0A6CD6; --mus:#D4D4DB; --mus-ln:#A9A9B4; --mus-s:#FFB892; --bm-bg:#F4F4F7;
   --good:#248A3D; --good-soft:rgba(52,199,89,.16); --warn:#B25000; --warn-soft:rgba(255,149,0,.16); --bad:#D70015; --bad-soft:rgba(255,59,48,.14);
   --bar:rgba(242,242,247,.82); --shadow:0 12px 40px rgba(0,0,0,.16); --shadow-sm:0 2px 10px rgba(0,0,0,.06);
   --tabh:58px;
@@ -34,7 +34,7 @@
   :root:not([data-theme="light"]){
     --bg:#000000; --card:#1C1C1E; --text:#F5F5F7; --text2:#98989F; --text3:#5A5A5F;
     --sep:rgba(84,84,88,.5); --fill:rgba(118,118,128,.24); --fill2:rgba(118,118,128,.34);
-    --accent:#FF7A3D; --accent2:#FFA463; --accent-soft:rgba(255,122,61,.18); --on-accent:#1A0A00; --fig:#6CB8FF; --mus:#48484F; --mus-j:#2E2E33; --mus-s:#B4562A;
+    --accent:#FF7A3D; --accent2:#FFA463; --accent-soft:rgba(255,122,61,.18); --on-accent:#1A0A00; --fig:#6CB8FF; --mus:#45454B; --mus-ln:#7C7C88; --mus-s:#C2652F; --bm-bg:#161618;
     --good:#30D158; --good-soft:rgba(48,209,88,.18); --warn:#FFB340; --warn-soft:rgba(255,159,10,.2); --bad:#FF6961; --bad-soft:rgba(255,69,58,.2);
     --bar:rgba(10,10,10,.78); --shadow:0 12px 40px rgba(0,0,0,.6); --shadow-sm:none; color-scheme:dark;
   }
@@ -42,7 +42,7 @@
 :root[data-theme="dark"]{
   --bg:#000000; --card:#1C1C1E; --text:#F5F5F7; --text2:#98989F; --text3:#5A5A5F;
   --sep:rgba(84,84,88,.5); --fill:rgba(118,118,128,.24); --fill2:rgba(118,118,128,.34);
-  --accent:#FF7A3D; --accent2:#FFA463; --accent-soft:rgba(255,122,61,.18); --on-accent:#1A0A00; --fig:#6CB8FF; --mus:#48484F; --mus-j:#2E2E33; --mus-s:#B4562A;
+  --accent:#FF7A3D; --accent2:#FFA463; --accent-soft:rgba(255,122,61,.18); --on-accent:#1A0A00; --fig:#6CB8FF; --mus:#45454B; --mus-ln:#7C7C88; --mus-s:#C2652F; --bm-bg:#161618;
   --good:#30D158; --good-soft:rgba(48,209,88,.18); --warn:#FFB340; --warn-soft:rgba(255,159,10,.2); --bad:#FF6961; --bad-soft:rgba(255,69,58,.2);
   --bar:rgba(10,10,10,.78); --shadow:0 12px 40px rgba(0,0,0,.6); --shadow-sm:none; color-scheme:dark;
 }
@@ -382,13 +382,15 @@ button.row:active{background:var(--fill)}
 
 /* mapa de músculos */
 .bmap{background:var(--card);border-radius:14px;padding:10px 10px 12px;margin-bottom:12px}
-.bmap svg{width:100%;max-width:340px;height:auto;display:block;margin:0 auto}
-.bmap path,.bmap ellipse{stroke:var(--card);stroke-width:.9;stroke-linejoin:round;transition:fill .35s}
-.bmap .bm-t{fill:var(--mus-j);stroke:none}
-.bmap .bm-j{fill:var(--mus-j)}
-.bmap .bm-m{fill:var(--mus)}
-.bmap .bm-p{fill:var(--accent)}
-.bmap .bm-s{fill:var(--mus-s)}
+.bmap{background:var(--bm-bg)}
+.bmap svg{width:100%;max-width:380px;height:auto;display:block;margin:0 auto}
+.bmap path{stroke-linejoin:round;transition:fill .35s}
+.bmap .bm-b{fill:var(--mus);stroke:none}
+.bmap .bm-m{fill:var(--mus);stroke:var(--mus-ln);stroke-width:.55}
+.bmap .bm-p{fill:var(--accent);stroke:var(--mus-ln);stroke-width:.55}
+.bmap .bm-s{fill:var(--mus-s);stroke:var(--mus-ln);stroke-width:.55}
+.bmap .bm-o{fill:none;stroke:var(--mus-ln);stroke-width:.8}
+.bmap .bm-ln{fill:none;stroke:var(--mus-ln);stroke-width:.5;stroke-linecap:round}
 .bmap text{fill:var(--text2);font-size:9px;font-weight:800;text-anchor:middle;font-family:var(--font)}
 .bm-leg{display:flex;flex-direction:column;gap:4px;font-size:14px;margin-top:8px}
 .bm-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
@@ -1106,70 +1108,80 @@ function useLine(ex){
   if(ex.a)parts.push("accesorio: "+ATT[ex.a].n.toLowerCase());
   return parts.length?parts.join(" · "):"Sin máquina, en la colchoneta o el piso";
 }
-/* mapa de músculos: frente y espalda; principal en color fuerte, los que ayudan en suave */
+/* mapa de músculos: cuerpo completo de frente y de espalda, cada músculo con su forma.
+   El que trabaja va en color fuerte; los que ayudan, en suave. Dibujo propio (medio cuerpo, el otro lado en espejo). */
 const MUSC_PAT={squat:[["cuad"],["gluteo","aductor"]],press_pierna:[["cuad"],["gluteo","femoral"]],lunge:[["cuad","gluteo"],["femoral","aductor"]],
-  quad_iso:[["cuad"],[]],hinge:[["femoral","gluteo"],["lumbar"]],glute:[["gluteo"],["femoral"]],ham_iso:[["femoral"],["pantorrilla"]],
-  abd:[["gluteo"],[]],add:[["aductor"],[]],calf:[["pantorrilla"],[]],chest:[["pecho"],["triceps","hombro_f"]],chest_inc:[["pecho","hombro_f"],["triceps"]],
-  fly:[["pecho"],["hombro_f"]],vpull:[["espalda"],["biceps","hombro_b"]],hrow:[["espalda"],["biceps","hombro_b","trapecio"]],lat_iso:[["espalda"],["triceps"]],
+  quad_iso:[["cuad"],[]],hinge:[["femoral","gluteo"],["lumbar"]],glute:[["gluteo"],["femoral","gluteo_med"]],ham_iso:[["femoral"],["pantorrilla"]],
+  abd:[["gluteo_med"],["gluteo"]],add:[["aductor"],[]],calf:[["pantorrilla"],[]],chest:[["pecho","pecho_sup"],["triceps","hombro_f"]],chest_inc:[["pecho_sup","hombro_f"],["pecho","triceps"]],
+  fly:[["pecho","pecho_sup"],["hombro_f"]],vpull:[["espalda"],["biceps","hombro_b"]],hrow:[["espalda"],["biceps","hombro_b","trapecio"]],lat_iso:[["espalda"],["triceps","serrato"]],
   rear:[["hombro_b"],["trapecio","espalda"]],ohp:[["hombro_f"],["triceps","trapecio"]],lat:[["hombro_f","hombro_b"],["trapecio"]],bi:[["biceps"],["antebrazo"]],
-  bi2:[["biceps","antebrazo"],[]],tri:[["triceps"],[]],tri2:[["triceps"],["pecho"]],abs:[["abdomen"],["oblicuo"]],abs2:[["abdomen","oblicuo"],["lumbar"]]};
+  bi2:[["biceps","antebrazo"],[]],tri:[["triceps"],[]],tri2:[["triceps"],["pecho","pecho_sup"]],abs:[["abdomen"],["oblicuo"]],abs2:[["abdomen","oblicuo"],["lumbar","serrato"]]};
 const MUSC_EX={hiperextension:[["lumbar"],["gluteo","femoral"]],fondos:[["triceps","pecho"],["hombro_f"]],fondos_asist:[["triceps","pecho"],["hombro_f"]],
-  face_pull:[["hombro_b"],["trapecio","espalda"]],dominadas:[["espalda"],["biceps"]],dominada_asist:[["espalda"],["biceps"]],abductor:[["gluteo"],[]]};
-const MUSC_N={cuad:"Cuádriceps",gluteo:"Glúteo",aductor:"Aductores",femoral:"Femoral",lumbar:"Espalda baja",pantorrilla:"Pantorrilla",pecho:"Pecho",
-  triceps:"Tríceps",hombro_f:"Hombro (frente)",hombro_b:"Hombro (atrás)",espalda:"Espalda",biceps:"Bíceps",antebrazo:"Antebrazo",abdomen:"Abdomen",
-  trapecio:"Trapecio",oblicuo:"Oblicuos"};
-/* Medio cuerpo (lado derecho, x>0); el otro lado se dibuja en espejo. Cada músculo con su forma y una línea fina que lo separa. */
+  face_pull:[["hombro_b"],["trapecio","espalda"]],dominadas:[["espalda"],["biceps"]],dominada_asist:[["espalda"],["biceps"]],abductor:[["gluteo_med"],["gluteo"]]};
+const MUSC_N={cuad:"Cuádriceps",gluteo:"Glúteo",gluteo_med:"Glúteo medio",aductor:"Aductores",femoral:"Femoral",lumbar:"Espalda baja",pantorrilla:"Pantorrilla",
+  pecho:"Pecho",pecho_sup:"Pecho alto",triceps:"Tríceps",hombro_f:"Hombro (frente)",hombro_b:"Hombro (atrás)",espalda:"Espalda",biceps:"Bíceps",antebrazo:"Antebrazo",
+  abdomen:"Abdomen",trapecio:"Trapecio",oblicuo:"Oblicuos",serrato:"Serrato"};
+// contorno de medio cuerpo, de la coronilla al pie y de vuelta por la entrepierna (brazos abiertos, palmas al frente)
+const BM_OUT="M0 2C7 2 12 6 12.5 13C13 19 12 24 10 27C8.5 30 7 31.5 6 32.5L6.6 36L7.5 40C12 42 20 44 26 46C31 47 34.6 51 35 57C35.4 62 34.5 66 33.6 70C36 80 39.5 90 42 98C45 106 49 116 51.5 126L54 136C58 139 61 144 62 150C62.5 155 61 160 58.5 163C56 164.5 53.5 163.5 52 161C50 157 48.5 151 47.5 145L46 138C44.5 128 40.5 116 36 106C34.5 103 33 101 31.5 99C29.5 92 27.5 84 25.5 76L24 72C22.5 82 21 92 19.5 102C19.2 108 20 113 22 118C24.5 124 25.5 130 25.5 136C26 150 25 165 22.5 180C21.5 186 21 190 21 194C22.5 202 23.5 212 22 222C21 230 19.5 236 19 241C21 244 24 248 24.5 252C24 255 21 256 17 256C13 256 10.5 255 10 252C9.5 248 10 244 10.5 241C9.5 232 8 220 8.5 210C9 202 9.5 197 9.5 193C8.5 180 6 165 3.5 152C2.5 147 1.5 143 0 141";
+const rr=(x,y,w,h,r)=>`M${x+r} ${y}H${x+w-r}Q${x+w} ${y} ${x+w} ${y+r}V${y+h-r}Q${x+w} ${y+h} ${x+w-r} ${y+h}H${x+r}Q${x} ${y+h} ${x} ${y+h-r}V${y+r}Q${x} ${y} ${x+r} ${y}Z`;
+const BM_ARM_F=[
+  ["biceps","M26.5 72C29.5 70 33 70.5 34.6 73.5C37 80 39 87 39.6 93C38.5 96 36 97.5 33.5 96.5C30.5 90 28 82 26.5 72Z"],
+  ["biceps","M37.5 80C39.5 86 41.2 92 41.8 97.5L39.8 95.5C39.5 90 38.6 85 37.5 80Z"],
+  ["triceps","M24.5 74C25.8 82 28 90 31 98L29 97C27 91 25 84 24.5 74Z"],
+  ["antebrazo","M41.5 99C44 103 47 110 49.5 118C50.5 122 51.3 126 51.8 130L49.5 128C47 120 43 110 40 101Z"],
+  ["antebrazo","M33 100C36.5 101 39.5 103 41 106C45 114 48 124 50 133L47 137.5C44 129 38 118 32.5 102Z"]];
 const BM_FRONT=[
-  ["trapecio","M5.5 26C8 31 13 34 19 36.5L9 37.5C7 34 6 30 5.5 26Z"],
-  ["hombro_f","M19.5 37C25.5 36.5 30.5 40.5 31.5 47.5C31.8 51 31 54.5 29.5 57C27 52.5 23 49 18 47.5C17.5 43.5 18 40 19.5 37Z"],
-  ["pecho","M1.5 40C7 38.3 13.5 38.5 17.5 41C18.3 44.5 18.6 48 18.8 51.5C16.8 57.5 11.8 61.5 6 62C3.5 62 1.5 60.8 1.5 58.5Z"],
-  ["biceps","M20.5 52.5C23.5 50 28.5 51.5 30.5 56C32.3 63 31.8 71.5 29.8 78.5C27.8 80.5 24.8 80.5 23.3 78.5C21.3 71 20 62 20.5 52.5Z"],
-  ["", "M23.5 80.5C25.5 79.8 28.5 80 30.2 80.8L30.8 84.5C28.8 83.6 26 83.6 24.2 84.5Z"],
-  ["antebrazo","M24.5 85C28.5 82.8 33.5 84.5 35.3 88.8C36.5 96.5 35.6 106.5 33.6 115L29.4 115.6C27.4 107 25.3 96.5 24.5 85Z"],
-  ["", "M29 117C31 116 34 116.3 35 118C36 122 35.5 127 33.5 130C31.5 130.8 29.5 130 28.8 128C28 124 28 120 29 117Z"],
-  ["oblicuo","M10.2 63.5C14 62.3 17.6 62.5 19.2 64.5C18.7 76 17.8 88 17.2 100C15.2 104 12.7 106.2 10.6 107C10.1 92 9.9 77.5 10.2 63.5Z"],
-  ["abdomen","M1.2 66.6C1.2 65.2 2.3 64 3.8 64H6C7.5 64 8.6 65.2 8.6 66.6V71C8.6 72.5 7.5 73.6 6 73.6H3.8C2.3 73.6 1.2 72.5 1.2 71Z"],
-  ["abdomen","M1.2 77.9C1.2 76.5 2.3 75.3 3.8 75.3H6C7.5 75.3 8.6 76.5 8.6 77.9V82.3C8.6 83.8 7.5 84.9 6 84.9H3.8C2.3 84.9 1.2 83.8 1.2 82.3Z"],
-  ["abdomen","M1.2 89.2C1.2 87.8 2.3 86.6 3.8 86.6H6C7.5 86.6 8.6 87.8 8.6 89.2V93.6C8.6 95.1 7.5 96.2 6 96.2H3.8C2.3 96.2 1.2 95.1 1.2 93.6Z"],
-  ["abdomen","M1.2 98C3.5 97.8 6.5 97.8 8.6 98C8.8 104.5 6.8 110 1.2 114.5Z"],
-  ["", "M17.2 100C19.8 104.5 21.6 109.5 22.4 115.5L16 114.5C13.5 112.5 11.5 110 10.6 107C13.2 105.8 15.4 103.6 17.2 100Z"],
-  ["aductor","M1.8 116.5C4.2 114.6 6.7 114.4 8 116.2C7.6 122.5 7.6 128.5 8.3 134C6 131 3.6 125 1.8 116.5Z"],
-  ["cuad","M8.6 115.5C10.6 113 13.6 113 14.8 115C15.8 127.5 15.8 142.5 15.2 156.5C13.8 157.6 12.1 157.4 11.1 156C10.5 145 9.6 129.5 8.6 115.5Z"],
-  ["cuad","M15.8 114.8C19.2 112.6 21.7 113.4 22.5 117.5C23.6 128.5 22.9 140.5 20.6 151C19.6 154.6 18.2 156.6 16.6 157C16.9 145 16.7 128.5 15.8 114.8Z"],
-  ["cuad","M8.4 136.5C9.6 140 10.3 147 10.5 155C8.8 154 7.6 150.5 7.4 145.5C7.2 141.5 7.6 138.5 8.4 136.5Z"],
-  ["", "M9 161C9 158.8 11 157.6 13.4 157.6S17.8 158.8 17.8 161 15.8 164.4 13.4 164.4 9 163.2 9 161Z"],
-  ["", "M9.6 166C11.6 164.4 16.6 164.4 18.6 167C19.6 177 18.6 189 16.6 199L12.6 199.5C10.8 189 9 177 9.6 166Z"],
-  ["pantorrilla","M8.4 168.5C7.7 175 8.3 182 9.8 187.5C10.2 180.5 10.2 173.5 9.6 167.5Z"],
-  ["", "M9.8 204C9.8 202 12 201 14.6 201S19.4 202 19.4 204 17.2 207 14.6 207 9.8 206 9.8 204Z"]];
+  ["x","M3 33C4.5 36 6 40 6.5 44L4 45C3.5 41 3 37 3 33Z"],
+  ["trapecio","M7.5 40C12 42 20 44 26 46C21 48 14 48.5 9 47C8.2 44.5 7.8 42 7.5 40Z"],
+  ["pecho_sup","M1.5 47.5C8 46 16 46.5 23 48.5C23.6 50.8 24 53 24.4 55C17.5 53.6 9.5 54 1.5 56Z"],
+  ["pecho","M1.5 57.2C9.5 55.2 17.6 54.8 24.6 56.4C25 58 25.3 59.6 25.8 61C26.8 64.2 26.4 66.6 24.4 68.6C19.6 74.4 13.6 77.8 8.2 78C5 78.1 2.6 77 1.5 74.6Z"],
+  ["hombro_f","M26 46C31 47 34.6 51 35 57C35.4 62 34.5 66 33.6 70C31 66 28 62 23.5 58.5C22.5 54 23.5 49.5 26 46Z"],
+  ["serrato","M19.6 77C21.4 75.4 23 74 24.3 73.2C23.6 79 22.6 86 21.6 92.5C20.6 87.5 19.8 82 19.6 77Z"],
+  ["oblicuo","M10.8 79C14 78 18 79 19.4 80.5C20.2 88 20.2 96 19.6 102C19.4 108 20.2 113 21.6 117.5C18 122 14 127 11 131C10.4 114 10.2 96 10.8 79Z"],
+  ["abdomen",rr(1.3,79,8.4,9.2,2.4)],["abdomen",rr(1.3,89.8,8.4,9.2,2.4)],["abdomen",rr(1.3,100.6,8.4,9.2,2.4)],
+  ["abdomen","M1.3 111.6H9.7C9.9 119 8 127 1.3 134Z"],
+  ["gluteo_med","M21.6 118C24 124 25.2 130 25.4 135C23.5 132 21 128.5 19.5 125Z"],
+  ["aductor","M2.2 143C5 139.5 9 138 12.5 138.5C11 147 10 157 10.4 166C7.5 160 4.6 152 2.2 143Z"],
+  ["aductor","M3.8 153C5.6 162 7.2 172 8.4 184L7.3 184C5.8 172 4.6 162 3.8 153Z"],
+  ["x","M19.5 126C17 140 13.5 158 10.8 174C10.2 180 9.8 184 9.6 188L8.6 186.5C9 176 11 160 14.2 146C15.6 139 17.5 131 19.5 126Z"],
+  ["cuad","M21.5 130C24.5 136 25.6 148 25 160C24.5 170 23 178 21 186C19.6 183 18.8 178 18.6 172C18.4 160 19.2 144 21.5 130Z"],
+  ["cuad","M18.5 136C20.4 144 20.8 156 19.8 168C19.2 176 17.8 182 16.4 187C14.8 181 14.4 172 14.8 163C15.4 154 16.6 144 18.5 136Z"],
+  ["cuad","M11.6 166C13.8 170 15.2 177 15.6 185C14.4 188 12.6 188.5 11 187C10 181 10.2 173 11.6 166Z"],
+  ["x","M12 190C13.5 188.5 17 188.5 18.5 190.5C18.8 193.5 17.5 196 15.2 196.4C13 196 11.8 193.5 12 190Z"],
+  ["x","M17.5 199C20 203 21 212 20 222C19.4 228 18.6 233 17.8 238L16.4 238C16.6 226 16.6 212 17.5 199Z"],
+  ["pantorrilla","M10 199C12.5 204 13.5 212 13 222C12.6 226 11.6 229 10.2 231C9 224 8.6 214 8.8 206C9 203 9.4 201 10 199Z"],
+  ["pantorrilla","M21.2 200C22.8 206 23.4 214 22.4 222L21 228C21.4 218 21.4 208 21.2 200Z"],
+  ...BM_ARM_F];
 const BM_BACK=[
-  ["espalda","M8.8 47.5C12.8 44.2 17.8 43.2 21.6 45.6L21.2 50C16.2 50.4 11.6 51.6 7.6 54C7.7 51.6 8 49.4 8.8 47.5Z"],
-  ["trapecio","M1 25C4 28 9.5 32.5 19 36.5C14.5 40 10 44.5 7 51.5C5 57 3 63 1 68.5Z"],
-  ["hombro_b","M19.5 37C25.5 36.5 30.5 40.5 31.5 47.5C30.5 50.5 27.8 52.5 24.2 52.6C21.2 48.5 19.4 43.5 19.5 37Z"],
-  ["espalda","M6.8 55.5C10.4 52.6 16.2 51.6 21.2 51.2C22.2 60.5 21.2 72.5 18.8 84C15.4 90.4 11.4 94.2 7.2 96.2C5.6 85 5.2 70.5 6.8 55.5Z"],
-  ["lumbar","M1 70C3 70.2 5.4 72 6.4 76C7 85 7 95 6.5 104C4.5 106 2.6 106.6 1 106.6Z"],
-  ["oblicuo","M18.8 84C20.5 92 21.4 100 21.6 108L19.6 107C15.4 104.2 10 103.4 6.6 104.3L7.2 96.2C11.4 94.2 15.4 90.4 18.8 84Z"],
-  ["triceps","M20.5 52.5C23.5 50 28.5 51 31.2 55C33 63 32.5 72 30.5 79.5C28.2 81.3 25.6 81 24.1 79C22 71 20.4 62 20.5 52.5Z"],
-  ["", "M23.5 80.5C25.5 79.8 28.5 80 30.2 80.8L30.8 84.5C28.8 83.6 26 83.6 24.2 84.5Z"],
-  ["antebrazo","M24.5 85C28.5 82.8 33.5 84.5 35.3 88.8C36.5 96.5 35.6 106.5 33.6 115L29.4 115.6C27.4 107 25.3 96.5 24.5 85Z"],
-  ["", "M29 117C31 116 34 116.3 35 118C36 122 35.5 127 33.5 130C31.5 130.8 29.5 130 28.8 128C28 124 28 120 29 117Z"],
-  ["gluteo","M1 106.5C6 103.2 14 103.2 19.6 107C22.2 112 22.2 120 19.6 126C15 129.6 8 130.2 1 128.2Z"],
-  ["femoral","M12 131.5C16 129.8 20 129.8 21.6 132.2C22.4 141 21.1 150 18.6 157L15.1 157.5C14.6 148 13.6 139.5 12 131.5Z"],
-  ["femoral","M3.4 131.2C6.6 129.8 9.6 130 11.2 131.6C12.6 140 13.6 149 14.1 157.5L10.6 157C7.6 149 5 140 3.4 131.2Z"],
-  ["", "M9 161C9 158.8 11 157.6 13.4 157.6S17.8 158.8 17.8 161 15.8 164.4 13.4 164.4 9 163.2 9 161Z"],
-  ["pantorrilla","M13.6 165C17.2 163.4 19.6 165 19.9 169C20.1 177 18.6 184 16.1 189.5C14.6 186 13.6 179 13.6 165Z"],
-  ["pantorrilla","M7.5 167C9.6 163.6 12.1 163.6 13.1 165.6C13.1 175 13.1 183 12.6 190.5C9.6 187.5 7.5 180 7.5 167Z"],
-  ["", "M10.2 191.5H16L15.6 201H11Z"],
-  ["", "M9.8 204C9.8 202 12 201 14.6 201S19.4 202 19.4 204 17.2 207 14.6 207 9.8 206 9.8 204Z"]];
-const BM_TORSO="M-19.5 37C-21 50-20 80-17.5 100C-21 108-22.6 114-22.6 118H22.6C22.6 114 21 108 17.5 100C20 80 21 50 19.5 37Z";
-const BM_HEAD='<ellipse class="bm-j" cx="0" cy="14" rx="9" ry="11.5"/><path class="bm-j" d="M-5.5 24H5.5L6.5 34H-6.5Z"/>';
+  ["espalda","M12 62C15 57 19.5 54 23.6 54C24 58 24.6 62 25 64.5C21.5 66.5 17 67.5 12.6 67.5C12 66 11.8 64 12 62Z"],
+  ["espalda","M13 68.5C17.5 68.5 22 67.5 25.5 66C26.5 68.5 26.8 71 26 73C21.5 73.5 17 73 13.4 71.8Z"],
+  ["espalda","M9.5 72C14 74.5 20 75 25.8 74C24.5 82 22.6 92 21 100C20.2 106 20.4 111 21.4 116C16 118 10 118.5 6 118C4 108 3.5 95 4.5 86C6 81 7.5 76 9.5 72Z"],
+  ["oblicuo","M19.8 104C20 109 20.8 113.5 22 117.5C19 118.6 15 119 11.5 118.6C14.5 114.5 17.5 109.5 19.8 104Z"],
+  ["lumbar","M0.8 90C3 91 5.5 93 6.5 96C7.6 104 7.8 114 7 124C5 126.5 2.8 127.5 0.8 127.5Z"],
+  ["trapecio","M0.5 30C2.5 36 5 40 7.5 42C13 44 20 45 26 46.5C20 52 14 60 9 70C6 78 3 85 0.8 92Z"],
+  ["hombro_b","M26 46.5C31 47.5 34.6 51.5 35 57C35.4 62 34.5 66 33.6 70C31 68 28 66 25 64.5C23.5 60 23.6 52 26 46.5Z"],
+  ["triceps","M28 70C31.5 69.5 34 71 34.6 74C37 80 39 87 39.8 94C37.5 95 35.5 94.5 34 93C32 86 30 78 28 70Z"],
+  ["triceps","M24.2 73C25.8 71.5 27.2 70.8 28 70.5C30 78 32.2 86 33.8 93.4C32.4 96.5 31.6 98 31.2 99C28.6 92 26 82 24.2 73Z"],
+  ["antebrazo","M33.2 100C37 101.5 40.5 104 42.4 107.5C45.5 115 48.4 125 50.2 133.5L47.4 137C44 128 38.5 117 33.2 102Z"],
+  ["antebrazo","M42.6 99.5C45 104 47.8 111 49.8 118.5C50.8 123 51.5 127 51.9 130.5L50 128.5C47.6 120 44.4 111 41.6 101Z"],
+  ["gluteo_med","M7 119C12 118 17.5 118 22 118.5C24 122 25 126 25.3 130C21.5 127 17 125 12 124.5C10 123 8.2 121 7 119Z"],
+  ["gluteo","M1 128C5 124 12 123.5 18.5 125.5C23 127.5 25.4 131 25.6 136C25 142 22.5 146.5 18 149C12 151 6 150.5 1 149Z"],
+  ["femoral","M15 151C19 149.5 22.5 149.5 24.4 152C25 162 24 172 21.5 182C20.6 186 19.6 189 18.6 191C17.8 182 16.8 168 15 151Z"],
+  ["femoral","M6.5 150.8C9.8 150 12.8 150.2 14.2 151.4C15.8 164 16.8 176 17.2 190L15.4 191C12.6 181 9.6 168 6.5 150.8Z"],
+  ["aductor","M3.8 152C4.6 151.6 5.4 151.8 5.8 152.6C8.4 165 10.4 176 11.6 186L10.4 187.5C8 176 5.8 163 3.8 152Z"],
+  ["pantorrilla","M15.5 198C19.5 196.5 22.5 198.5 23 203C23.4 211 22 219 19.4 226C17.4 222 16 214 15.5 198Z"],
+  ["pantorrilla","M9.4 199C11 196 13.8 195.8 15 198C15.2 208 15 218 14.4 228C11.4 224 9.4 216 9.2 206Z"],
+  ["pantorrilla","M10.4 228C12.5 231 14.5 232 16.4 231.6C18.5 230.4 20 228 21 225C21.2 230.5 20.4 235 19.4 238.5H11.6C10.8 234.5 10.4 231 10.4 228Z"]];
+const BM_HAND='<path class="bm-ln" d="M52.6 150.5L54.4 160.8M55.6 149.4L57.6 159.8M58.4 147.6L60.2 156.6"/>';
 function bodyMap(id){
   const ex=EX[id],[p,s]=MUSC_EX[id]||MUSC_PAT[ex.pat]||[[],[]];
-  const cls=r=>!r?"bm-j":p.includes(r)?"bm-p":s.includes(r)?"bm-s":"bm-m";
-  const side=list=>list.map(([r,d])=>`<path class="${cls(r)}" d="${d}"/>`).join("");
-  const fig=(list,x)=>`<g transform="translate(${x} 0)"><path class="bm-t" d="${BM_TORSO}"/>${BM_HEAD}${side(list)}<g transform="scale(-1 1)">${side(list)}</g></g>`;
-  const names=a=>a.map(r=>MUSC_N[r]).join(", ");
-  return `<div class="bmap"><svg viewBox="0 0 180 224" aria-label="Músculos que trabaja">${fig(BM_FRONT,46)}${fig(BM_BACK,134)}
-    <text x="46" y="221">Frente</text><text x="134" y="221">Espalda</text></svg>
+  const cls=r=>p.includes(r)?"bm-p":s.includes(r)?"bm-s":"bm-m";
+  const side=list=>list.map(([r,d])=>`<path class="${cls(r)}" d="${d}"/>`).join("")+BM_HAND+`<path class="bm-o" d="${BM_OUT}"/>`;
+  const fig=(list,x)=>`<g transform="translate(${x} 0)"><path class="bm-b" d="${BM_OUT}L-1.2 141V2Z"/><g transform="scale(-1 1)"><path class="bm-b" d="${BM_OUT}L-1.2 141V2Z"/></g>
+    ${side(list)}<g transform="scale(-1 1)">${side(list)}</g></g>`;
+  const names=a=>a.filter(r=>!(r==="pecho_sup"&&a.includes("pecho"))).map(r=>MUSC_N[r]).join(", ");
+  return `<div class="bmap"><svg viewBox="0 0 268 270" aria-label="Músculos que trabaja">${fig(BM_FRONT,67)}${fig(BM_BACK,201)}
+    <text x="67" y="268">Frente</text><text x="201" y="268">Espalda</text></svg>
     <div class="bm-leg"><span><i class="bm-p"></i><b>Trabaja:</b> ${names(p)}</span>${s.length?`<span><i class="bm-s"></i><b>Ayudan:</b> ${names(s)}</span>`:""}</div></div>`;
 }
 function howHTML(id,open){

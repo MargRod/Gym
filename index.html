@@ -22,7 +22,7 @@
 :root{
   --bg:#F2F2F7; --card:#FFFFFF; --text:#000000; --text2:#6E6E73; --text3:#AEAEB2;
   --sep:rgba(60,60,67,.16); --fill:rgba(118,118,128,.12); --fill2:rgba(118,118,128,.2);
-  --accent:#F2541B; --accent2:#FF8A3D; --accent-soft:rgba(242,84,27,.12); --on-accent:#FFFFFF;
+  --accent:#F2541B; --accent2:#FF8A3D; --accent-soft:rgba(242,84,27,.12); --on-accent:#FFFFFF; --fig:#0A6CD6;
   --good:#248A3D; --good-soft:rgba(52,199,89,.16); --warn:#B25000; --warn-soft:rgba(255,149,0,.16); --bad:#D70015; --bad-soft:rgba(255,59,48,.14);
   --bar:rgba(242,242,247,.82); --shadow:0 12px 40px rgba(0,0,0,.16); --shadow-sm:0 2px 10px rgba(0,0,0,.06);
   --tabh:58px;
@@ -34,7 +34,7 @@
   :root:not([data-theme="light"]){
     --bg:#000000; --card:#1C1C1E; --text:#F5F5F7; --text2:#98989F; --text3:#5A5A5F;
     --sep:rgba(84,84,88,.5); --fill:rgba(118,118,128,.24); --fill2:rgba(118,118,128,.34);
-    --accent:#FF7A3D; --accent2:#FFA463; --accent-soft:rgba(255,122,61,.18); --on-accent:#1A0A00;
+    --accent:#FF7A3D; --accent2:#FFA463; --accent-soft:rgba(255,122,61,.18); --on-accent:#1A0A00; --fig:#6CB8FF;
     --good:#30D158; --good-soft:rgba(48,209,88,.18); --warn:#FFB340; --warn-soft:rgba(255,159,10,.2); --bad:#FF6961; --bad-soft:rgba(255,69,58,.2);
     --bar:rgba(10,10,10,.78); --shadow:0 12px 40px rgba(0,0,0,.6); --shadow-sm:none; color-scheme:dark;
   }
@@ -42,7 +42,7 @@
 :root[data-theme="dark"]{
   --bg:#000000; --card:#1C1C1E; --text:#F5F5F7; --text2:#98989F; --text3:#5A5A5F;
   --sep:rgba(84,84,88,.5); --fill:rgba(118,118,128,.24); --fill2:rgba(118,118,128,.34);
-  --accent:#FF7A3D; --accent2:#FFA463; --accent-soft:rgba(255,122,61,.18); --on-accent:#1A0A00;
+  --accent:#FF7A3D; --accent2:#FFA463; --accent-soft:rgba(255,122,61,.18); --on-accent:#1A0A00; --fig:#6CB8FF;
   --good:#30D158; --good-soft:rgba(48,209,88,.18); --warn:#FFB340; --warn-soft:rgba(255,159,10,.2); --bad:#FF6961; --bad-soft:rgba(255,69,58,.2);
   --bar:rgba(10,10,10,.78); --shadow:0 12px 40px rgba(0,0,0,.6); --shadow-sm:none; color-scheme:dark;
 }
@@ -369,6 +369,29 @@ button.row:active{background:var(--fill)}
 .seg button,.opt,.row,.chip,.wk,.eq,.gbtn{transition:background .25s,color .25s,border-color .25s,box-shadow .25s,transform .3s var(--spring)}
 .opt .rd svg,.eq .ck svg{animation:pop .35s var(--spring)}
 
+/* el monito: persona en azul sobre la máquina naranja */
+.pic .p{stroke:var(--fig);stroke-width:3.4}
+.pic .p .hd{fill:var(--fig);stroke:none}
+.eq:not(.on) .pic .p{opacity:.85}
+
+/* calentamiento */
+.warm{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.warm .thumb{width:48px;height:48px}
+.warm .thumb svg{width:40px;height:40px}
+.warm p{margin:0;font-size:14.5px;line-height:1.45}
+
+/* mapa de músculos */
+.bmap{background:var(--card);border-radius:14px;padding:10px 10px 12px;margin-bottom:12px}
+.bmap svg{width:100%;max-width:300px;height:auto;display:block;margin:0 auto}
+.bmap ellipse,.bmap rect,.bmap circle{fill:var(--fill2);transition:fill .3s}
+.bmap .bm-p{fill:var(--accent)}
+.bmap .bm-s{fill:var(--accent);fill-opacity:.4}
+.bmap text{fill:var(--text2);font-size:9px;font-weight:800;text-anchor:middle;font-family:var(--font)}
+.bm-leg{display:flex;flex-direction:column;gap:4px;font-size:14px;margin-top:8px}
+.bm-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.bm-leg i.bm-p{background:var(--accent)}
+.bm-leg i.bm-s{background:var(--accent);opacity:.4}
+
 /* cambio de tema: fundido */
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.45s;animation-timing-function:var(--ease)}
 html.theming,html.theming *{transition:background-color .5s var(--ease),color .5s var(--ease),border-color .5s var(--ease),box-shadow .5s var(--ease)!important}
@@ -425,18 +448,58 @@ const EQ = {
   curl_maq:{n:"Máquina de bíceps",d:"Sentado, brazos sobre un atril, doblás los codos",svg:'<path d="M14 10v34h16"/><path d="M10 58h28M22 44v14"/><path d="M28 32l14-6" stroke-width="6"/><path d="M42 26l6-12"/><circle cx="48" cy="12" r="4" class="f"/><rect x="52" y="8" width="7" height="42" rx="2"/>'},
   triceps_maq:{n:"Máquina de tríceps",d:"Sentado, empujás hacia abajo estirando los codos",svg:'<path d="M14 8v34h16"/><path d="M10 58h28M22 42v16"/><path d="M28 22l12 0"/><path d="M40 22v18" stroke-width="5"/><circle cx="40" cy="42" r="4" class="f"/><rect x="52" y="8" width="7" height="42" rx="2"/>'},
   abs_maq:{n:"Máquina de abdomen",d:"Sentado, encorvás el torso contra una almohadilla",svg:'<path d="M16 14v28h18"/><path d="M12 58h28M24 42v16"/><path d="M16 16h14" stroke-width="5"/><path d="M30 16c6 2 8 8 8 14"/><rect x="50" y="8" width="8" height="42" rx="2"/>'},
-  asistida:{n:"Dominadas y fondos asistidos",d:"Te arrodillás en una plataforma que te ayuda a subir",svg:'<path d="M12 58V8M52 58V8M6 58h52"/><path d="M8 10h48"/><path d="M12 30h12M52 30H40" stroke-width="4"/><path d="M22 44h20" stroke-width="5"/><path d="M32 44v14"/>'}
+  asistida:{n:"Dominadas y fondos asistidos",d:"Te arrodillás en una plataforma que te ayuda a subir",svg:'<path d="M12 58V8M52 58V8M6 58h52"/><path d="M8 10h48"/><path d="M12 30h12M52 30H40" stroke-width="4"/><path d="M22 44h20" stroke-width="5"/><path d="M32 44v14"/>'},
+  gluteo_maq:{n:"Máquina de glúteo (patada)",d:"Pecho apoyado, empujás una palanca hacia atrás con un pie",svg:'<path d="M48 8v50M10 58h46"/><rect x="40" y="20" width="8" height="15" rx="3" class="f"/><path d="M48 16h-7"/><path d="M28 50L11 47"/><circle cx="8" cy="46" r="4.5" class="f"/>'},
+  // cardio
+  caminadora:{n:"Caminadora",c:1,d:"Para calentar caminando o trotando",svg:'<path d="M5 51h43l5-7"/><path d="M48 44l6-26"/><rect x="49" y="11" width="12" height="8" rx="2" class="f"/><path d="M41 31l13-2"/>'},
+  eliptica:{n:"Elíptica",c:1,d:"Pedaleás de pie y movés los brazos; no golpea las rodillas",svg:'<path d="M8 57h48"/><path d="M14 51h28"/><path d="M40 8l-4 30"/><path d="M44 57l4-38"/><circle cx="50" cy="47" r="7"/>'},
+  escaladora:{n:"Escaladora",c:1,d:"Subís gradas sin parar",svg:'<path d="M8 57h10v-8h10v-8h10v-8h10v-8h10"/><path d="M14 30l38-12"/>'},
+  bici:{n:"Bicicleta",c:1,d:"Vertical, con respaldo o reclinada",svg:'<circle cx="47" cy="47" r="8"/><path d="M18 31h11M23 31l4 25h18M41 22h8M44 22l-3 21"/><path d="M14 57h40"/>'}
 };
-const EQ_ORDER = ["prensa","prensa_h","extension","curl_femoral","abductor","maq_hip","pantorrilla","hack","smith","barra","mancuernas","banco","poleas","jalon","remo","press_pecho","pec_deck","press_hombro","curl_maq","triceps_maq","abs_maq","asistida","torre","hiperextension","colchoneta"];
+// El "monito": una persona en otro color sobre cada máquina, para que se entienda cómo se usa.
+const FIG = {
+  barra:'<circle cx="32" cy="19" r="4.2" class="hd"/><path d="M32 24v18M24 26l8 1 8-1M32 42l-5 15M32 42l5 15"/>',
+  smith:'<circle cx="32" cy="24" r="4.2" class="hd"/><path d="M32 29v15M24 30l8 1 8-1M32 44l-6 6 1 7M32 44l6 6-1 7"/>',
+  prensa:'<circle cx="9" cy="21" r="4.2" class="hd"/><path d="M11 26l7 19M18 45l12-9 8-14M12 29l7 11"/>',
+  prensa_h:'<circle cx="20" cy="12" r="4.2" class="hd"/><path d="M20 17v20M20 37l13-6 12 4M20 21l5 16"/>',
+  extension:'<circle cx="22" cy="12" r="4.2" class="hd"/><path d="M22 17v20M22 37h14l8 14M22 21l6 16"/>',
+  curl_femoral:'<circle cx="7" cy="27" r="4.2" class="hd"/><path d="M11 29h24l14-9M12 30l-4 6"/>',
+  hack:'<circle cx="40" cy="11" r="4.2" class="hd"/><path d="M37 16l-9 22 10 6-12 6M36 18l-4 6"/>',
+  abductor:'<circle cx="32" cy="13" r="4.2" class="hd"/><path d="M32 18v17M32 35l-14 11-2 11M32 35l14 11 2 11M32 22l-8 11M32 22l8 11"/>',
+  maq_hip:'<circle cx="6" cy="25" r="4.2" class="hd"/><path d="M10 28l28-6 10 3 1 21M14 28l6 6"/>',
+  gluteo_maq:'<circle cx="37" cy="20" r="4.2" class="hd"/><path d="M34 25L24 38l2 18M24 38l-12-4-4 9M33 27l7-9"/>',
+  pantorrilla:'<circle cx="35" cy="6" r="4.2" class="hd"/><path d="M35 11v21M35 32l-2 14M35 32l2 14M35 14l-5 3"/>',
+  poleas:'<circle cx="32" cy="18" r="4.2" class="hd"/><path d="M32 23v17M32 26l-5 10M32 26l5 10M32 40l-4 16M32 40l4 16"/>',
+  jalon:'<circle cx="32" cy="27" r="4.2" class="hd"/><path d="M32 32v9M32 34L16 24M32 34l16-10M30 41l-3 15M34 41l3 15"/>',
+  remo:'<circle cx="21" cy="25" r="4.2" class="hd"/><path d="M22 30l2 16M24 46l10-5 7 3M22 32l9 12"/>',
+  press_pecho:'<circle cx="23" cy="11" r="4.2" class="hd"/><path d="M23 16l1 21M24 37h11l-1 16M23 20l17 2"/>',
+  pec_deck:'<circle cx="32" cy="13" r="4.2" class="hd"/><path d="M32 18v20M32 21l-22-3M32 21l22-3M30 38l-4 18M34 38l4 18"/>',
+  press_hombro:'<circle cx="24" cy="12" r="4.2" class="hd"/><path d="M24 17l1 20M25 37h10l-1 16M24 20l10-12"/>',
+  curl_maq:'<circle cx="19" cy="14" r="4.2" class="hd"/><path d="M19 19l1 22M20 41h10l-1 15M21 24l19 3 7-13"/>',
+  triceps_maq:'<circle cx="19" cy="12" r="4.2" class="hd"/><path d="M19 17l1 22M20 39h10l-1 16M21 21l12 7 7 10"/>',
+  abs_maq:'<circle cx="31" cy="20" r="4.2" class="hd"/><path d="M28 24l-6 16M22 40h11l-1 16M27 26l3-9"/>',
+  torre:'<circle cx="32" cy="20" r="4.2" class="hd"/><path d="M32 25v15M32 27l-7 9M32 27l7 9M32 40l-2 10 4 5"/>',
+  asistida:'<circle cx="32" cy="22" r="4.2" class="hd"/><path d="M32 27v11M32 29L18 12M32 29l14-17M32 38l-4 6M32 38l4 6"/>',
+  hiperextension:'<circle cx="56" cy="39" r="4.2" class="hd"/><path d="M46 21l8 14M44 22L19 49"/>',
+  caminadora:'<circle cx="28" cy="11" r="4.2" class="hd"/><path d="M28 16l-2 16M26 32l-6 8-4 8M26 32l6 8 4 8M28 19l-6 7M28 19l6 7"/>',
+  eliptica:'<circle cx="30" cy="10" r="4.2" class="hd"/><path d="M30 15v17M30 32l-4 12-4 6M30 32l4 12 4 7M30 18l7 7"/>',
+  escaladora:'<circle cx="30" cy="7" r="4.2" class="hd"/><path d="M30 12v18M30 30l-4 10 1 7M30 30l6 6 1 5M30 15l6 6"/>',
+  bici:'<circle cx="34" cy="12" r="4.2" class="hd"/><path d="M23 30l9-13M32 18l11 4M23 30l11 8 2 10M23 30l7 12-2 8"/>'
+};
+Object.keys(FIG).forEach(k=>{if(EQ[k])EQ[k].fig=FIG[k]});
+const EQ_ORDER = ["prensa","prensa_h","extension","curl_femoral","abductor","maq_hip","gluteo_maq","pantorrilla","hack","smith","barra","mancuernas","banco","poleas","jalon","remo","press_pecho","pec_deck","press_hombro","curl_maq","triceps_maq","abs_maq","asistida","torre","hiperextension","colchoneta"];
 // Lo típico de un gimnasio: viene marcado de entrada, el usuario quita lo que no hay.
 const EQ_DEFAULT = ["prensa","extension","curl_femoral","abductor","pantorrilla","smith","barra","mancuernas","banco","poleas","jalon","remo","press_pecho","pec_deck","press_hombro","colchoneta"];
 // Lista oficial de la cadena (smartfit.com.mx: "área de peso integrado" y "área de peso libre", consultado 1-oct-2026).
 // Peso libre: mancuernas 1-34 kg, barras rectas y Z fijas (10-46 kg), banco plano, inclinado y Scott. No mencionan rack para sentadilla.
 // El "Back extension" de la cadena es una máquina; acá se usa el ejercicio de hiperextensión, que trabaja lo mismo.
+const CARDIO = ["eliptica","bici","caminadora","escaladora"]; // en este orden se elige para calentar (de menor a mayor impacto)
 const GYMS = {
+  // Lo que el usuario vio en su sucursal el 2-oct-2026 (maquinas.json + fotos). Jalón, mancuernas y bancos salen de las fotos.
+  santaclara:{n:"Smart Fit Santa Clara",s:"Lo que viste en tu sucursal (2 de octubre)",eq:["prensa","gluteo_maq","extension","curl_femoral","abductor","press_pecho","press_hombro","remo","triceps_maq","curl_maq","abs_maq","hiperextension","poleas","jalon","mancuernas","banco","colchoneta","caminadora","eliptica","escaladora","bici"]},
   smartfit:{n:"Smart Fit",s:"Lista oficial de máquinas de la cadena",eq:["prensa","prensa_h","extension","curl_femoral","abductor","maq_hip","pantorrilla","hack","smith","mancuernas","banco","poleas","jalon","remo","press_pecho","pec_deck","press_hombro","curl_maq","triceps_maq","abs_maq","asistida","hiperextension","colchoneta"]},
   comun:{n:"Gimnasio común",s:"Las máquinas más típicas",eq:EQ_DEFAULT},
-  completo:{n:"Gimnasio completo",s:"Con rack de sentadilla y de todo",eq:EQ_ORDER}
+  completo:{n:"Gimnasio completo",s:"Con rack de sentadilla y de todo",eq:EQ_ORDER.concat(CARDIO)}
 };
 
 const ATT = {
@@ -522,6 +585,9 @@ const EX = {
   prensa_h:{n:"Prensa horizontal",g:"pierna",m:"Cuádriceps y glúteo",pat:"press_pierna",eq:["prensa_h"],k:"c",r:.5,lvl:1,
     how:["Ajustá el asiento para que las rodillas queden dobladas a unos 90° al empezar.","Pies al centro de la plataforma, al ancho de los hombros.","Empujá hasta casi estirar las piernas, sin trabar las rodillas.","Volvé despacio sin que la espalda se despegue."],
     err:["Trabar las rodillas","Despegar la espalda baja"],yt:"prensa horizontal sentado técnica"},
+  patada_maq:{n:"Patada de glúteo en máquina",g:"gluteo",m:"Glúteo",pat:"glute",eq:["gluteo_maq"],k:"i",r:.25,lvl:1,
+    how:["Apoyá el pecho en la almohadilla y agarrá las manijas.","Un pie en la plataforma; el otro contra la palanca, atrás.","Empujá la palanca hacia atrás y arriba con el talón, apretando el glúteo.","Volvé despacio. Hacé todas y cambiá de pierna."],
+    err:["Arquear la espalda baja para subir más","Usar impulso"],yt:"patada de glúteo en máquina técnica"},
   hip_maq:{n:"Hip thrust en máquina",g:"gluteo",m:"Glúteo",pat:"glute",eq:["maq_hip"],k:"c",r:.4,lvl:1,
     how:["Espalda alta apoyada en el respaldo y la almohadilla sobre la cadera.","Pies apoyados, rodillas a 90° arriba.","Subí la cadera apretando el glúteo y aguantá 1 segundo.","Bajá despacio."],
     err:["Arquear la espalda baja en vez de usar el glúteo"],yt:"hip thrust máquina técnica"},
@@ -721,6 +787,7 @@ const P={get(k,d){try{const v=localStorage.getItem("gym:"+k);return v==null?d:JS
          set(k,v){try{localStorage.setItem("gym:"+k,JSON.stringify(v))}catch(e){}}};
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const pic=(svg,cls)=>`<svg class="pic ${cls||""}" viewBox="0 0 64 64" aria-hidden="true">${svg}</svg>`;
+const eqPic=k=>{const e=EQ[k]||EQ.colchoneta;return pic(e.svg+(e.fig?`<g class="p">${e.fig}</g>`:""))};
 const I={
   chev:'<path d="M9 5l7 7-7 7"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',play:'<path d="M7 4.5v15l12-7.5z" fill="currentColor"/>',
   swap:'<path d="M4 8h13l-3-3M20 16H7l3 3"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',plus:'<path d="M12 5v14M5 12h14"/>',
@@ -917,6 +984,7 @@ function wNote(ex){
   if(ex.eq.includes("barra"))return`Anotá el peso total contando la barra (la barra larga pesa ${U()==="lb"?"45 lb":"20 kg"}).`;
   if(ex.eq.includes("smith")||ex.eq.includes("prensa")||ex.eq.includes("hack"))return"Anotá solo los discos que agregás, sin contar la barra ni la plataforma.";
   if(ex.per==="mano")return"Anotá el peso de cada mancuerna.";
+  if(ex.eq.includes("mancuernas"))return"Anotá el peso de la mancuerna.";
   if(ex.eq.includes("poleas"))return"Anotá el número que marca la torre de pesas.";
   return"Anotá el número que marca la torre de pesas de la máquina.";
 }
@@ -1027,7 +1095,7 @@ function anim(){view.style.animation="none";void view.offsetWidth;view.style.ani
 const greet=()=>{const h=new Date().getHours();return h<12?"Buenos días":h<19?"Buenas tardes":"Buenas noches"};
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const dateLbl=d=>new Date(d).toLocaleDateString("es",{weekday:"long",day:"numeric",month:"long"});
-const thumbEx=id=>{const ex=EX[id];const k=ex.eq[0];return `<div class="thumb">${k?pic(EQ[k].svg):pic(EQ.colchoneta.svg)}</div>`};
+const thumbEx=id=>{const ex=EX[id];const k=ex.eq[0];return `<div class="thumb">${k?eqPic(k):eqPic("colchoneta")}</div>`};
 const gTag=g=>`<span class="tag"><i style="background:${GROUPS[g].c}"></i>${GROUPS[g].n}</span>`;
 function useLine(ex){
   const parts=[];
@@ -1035,11 +1103,41 @@ function useLine(ex){
   if(ex.a)parts.push("accesorio: "+ATT[ex.a].n.toLowerCase());
   return parts.length?parts.join(" · "):"Sin máquina, en la colchoneta o el piso";
 }
+/* mapa de músculos: frente y espalda; principal en color fuerte, los que ayudan en suave */
+const MUSC_PAT={squat:[["cuad"],["gluteo","aductor"]],press_pierna:[["cuad"],["gluteo","femoral"]],lunge:[["cuad","gluteo"],["femoral","aductor"]],
+  quad_iso:[["cuad"],[]],hinge:[["femoral","gluteo"],["lumbar"]],glute:[["gluteo"],["femoral"]],ham_iso:[["femoral"],["pantorrilla"]],
+  abd:[["gluteo"],[]],add:[["aductor"],[]],calf:[["pantorrilla"],[]],chest:[["pecho"],["triceps","hombro_f"]],chest_inc:[["pecho","hombro_f"],["triceps"]],
+  fly:[["pecho"],["hombro_f"]],vpull:[["espalda"],["biceps","hombro_b"]],hrow:[["espalda"],["biceps","hombro_b"]],lat_iso:[["espalda"],["triceps"]],
+  rear:[["hombro_b"],["espalda"]],ohp:[["hombro_f"],["triceps","hombro_b"]],lat:[["hombro_f","hombro_b"],[]],bi:[["biceps"],["antebrazo"]],
+  bi2:[["biceps","antebrazo"],[]],tri:[["triceps"],[]],tri2:[["triceps"],["pecho"]],abs:[["abdomen"],[]],abs2:[["abdomen"],["lumbar"]]};
+const MUSC_EX={hiperextension:[["lumbar"],["gluteo","femoral"]],fondos:[["triceps","pecho"],["hombro_f"]],fondos_asist:[["triceps","pecho"],["hombro_f"]],
+  face_pull:[["hombro_b"],["espalda"]],dominadas:[["espalda"],["biceps"]],dominada_asist:[["espalda"],["biceps"]],abductor:[["gluteo"],[]]};
+const MUSC_N={cuad:"Cuádriceps",gluteo:"Glúteo",aductor:"Aductores",femoral:"Femoral",lumbar:"Espalda baja",pantorrilla:"Pantorrilla",pecho:"Pecho",
+  triceps:"Tríceps",hombro_f:"Hombro (frente)",hombro_b:"Hombro (atrás)",espalda:"Espalda",biceps:"Bíceps",antebrazo:"Antebrazo",abdomen:"Abdomen"};
+function bodyMap(id){
+  const ex=EX[id],[p,s]=MUSC_EX[id]||MUSC_PAT[ex.pat]||[[],[]];
+  const c=r=>p.includes(r)?"bm-p":s.includes(r)?"bm-s":"";
+  const E=(r,x,y,rx,ry)=>`<ellipse class="${c(r)}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+  const front=`<circle cx="40" cy="12" r="8"/><rect x="36" y="19" width="8" height="6" rx="2"/>
+    ${E("hombro_f",25,32,7,6)}${E("hombro_f",55,32,7,6)}${E("pecho",33,38,8,7)}${E("pecho",47,38,8,7)}
+    <rect class="${c("abdomen")}" x="32" y="47" width="16" height="25" rx="5"/>${E("biceps",20,47,4.5,9)}${E("biceps",60,47,4.5,9)}
+    ${E("antebrazo",17,66,3.8,9)}${E("antebrazo",63,66,3.8,9)}${E("cuad",33,92,7,16)}${E("cuad",47,92,7,16)}${E("aductor",40,86,2.6,9)}
+    ${E("x",33,124,4.5,12)}${E("x",47,124,4.5,12)}`;
+  const back=`<circle cx="120" cy="12" r="8"/><rect x="116" y="19" width="8" height="6" rx="2"/>
+    ${E("hombro_b",105,32,7,6)}${E("hombro_b",135,32,7,6)}${E("espalda",112,44,8,12)}${E("espalda",128,44,8,12)}
+    <rect class="${c("lumbar")}" x="113" y="57" width="14" height="13" rx="4"/>${E("triceps",100,47,4.5,9)}${E("triceps",140,47,4.5,9)}
+    ${E("antebrazo",97,66,3.8,9)}${E("antebrazo",143,66,3.8,9)}${E("gluteo",113,79,7.5,7.5)}${E("gluteo",127,79,7.5,7.5)}
+    ${E("femoral",113,99,6.5,12)}${E("femoral",127,99,6.5,12)}${E("pantorrilla",113,124,5,12)}${E("pantorrilla",127,124,5,12)}`;
+  const names=a=>a.map(r=>MUSC_N[r]).join(", ");
+  return `<div class="bmap"><svg viewBox="0 0 160 142" aria-label="Músculos que trabaja">${front}${back}
+    <text x="40" y="141">Frente</text><text x="120" y="141">Espalda</text></svg>
+    <div class="bm-leg"><span><i class="bm-p"></i><b>Trabaja:</b> ${names(p)}</span>${s.length?`<span><i class="bm-s"></i><b>Ayudan:</b> ${names(s)}</span>`:""}</div></div>`;
+}
 function howHTML(id,open){
   const ex=EX[id];
-  const uses=ex.eq.map(k=>`<div class="use"><div class="thumb">${pic(EQ[k].svg)}</div><div><b>${esc(EQ[k].n)}</b><div class="muted" style="font-size:14px">${esc(EQ[k].d)}</div></div></div>`).join("")+
+  const uses=ex.eq.map(k=>`<div class="use"><div class="thumb">${eqPic(k)}</div><div><b>${esc(EQ[k].n)}</b><div class="muted" style="font-size:14px">${esc(EQ[k].d)}</div></div></div>`).join("")+
     (ex.a?`<div class="use"><div class="thumb">${pic(ATT[ex.a].svg)}</div><div><b>${esc(ATT[ex.a].n)}</b><div class="muted" style="font-size:14px">Se engancha en la polea con el mosquetón. ${esc(ATT[ex.a].d)}.</div></div></div>`:"");
-  return `<details class="how"${open?" open":""}><summary>Cómo se hace ${ic("chev",18)}</summary><div class="body">${uses}
+  return `<details class="how"${open?" open":""}><summary>Cómo se hace ${ic("chev",18)}</summary><div class="body">${bodyMap(id)}${uses}
     <ol>${ex.how.map(h=>`<li>${esc(h)}</li>`).join("")}</ol>
     <div class="err"><b>Evitá:</b> ${ex.err.map(esc).join(" · ")}</div>
     <a class="vid" href="https://www.youtube.com/results?search_query=${encodeURIComponent(ex.yt)}" target="_blank" rel="noopener">${ic("video",20)} Ver video de cómo se hace</a></div></details>`;
@@ -1093,7 +1191,7 @@ function renderHome(){
   <div class="h2">¿Querés hacer otra cosa?<small>Elegí qué entrenar y te armo la sesión.</small></div>
   <div class="daygrid">${DAY_ORDER.map(d=>`<a class="dayc press" href="#/dia/${d}"><span class="dot" style="background:${GROUPS[DAYS[d].g].c}">${ic("dumbbell",17)}</span><b>${esc(DAYS[d].n)}</b><span>${esc(DAYS[d].s)}</span></a>`).join("")}</div>
   <div class="stats"><div class="stat"><b>${wk}</b><span>esta semana</span></div><div class="stat"><b>${tot}</b><span>entrenos</span></div><div class="stat"><b>${S.prof.days}</b><span>días / semana</span></div></div>
-  <p class="note">Antes de empezar: 5 minutos de caminadora o bici suave, y una serie liviana del primer ejercicio para calentar.</p>`;
+  <div style="margin-top:14px">${warmTip()}</div>`;
 }
 function weekStrip(){
   const ws=weekStart(Date.now()),logs=S.logs.filter(l=>new Date(l.d).getTime()>=ws);
@@ -1156,12 +1254,19 @@ function renderSession(){
   setBar({title:DAYS[A.day].n,backTxt:"Hoy",back:()=>location.hash="#/",actions:`<button class="icon-btn" data-act="sess-menu" aria-label="Opciones">${ic("list",22)}</button>`});
   view.innerHTML=`<div class="sess-head"><h1>${esc(DAYS[A.day].n)}</h1><span class="clock" id="clock">0:00</span></div>
   <div class="progress"><i id="prog"></i></div>
+  ${warmTip()}
   <div id="exs" class="fresh">${A.ex.map((e,i)=>exCard(i)).join("")}</div>
   <button class="big ghost" data-act="add-ex" style="width:100%;margin-top:4px">${ic("plus",20)} Agregar ejercicio</button>
   <p class="note">Tocá el ✓ al terminar cada serie: arranca el descanso y te digo si el peso está bien.</p>`;
   setDock(`<button class="big" data-act="finish">${ic("flag",20)} Terminar entrenamiento</button>`);
   updProg();clearInterval(clockT);clockT=setInterval(tick,1000);tick();keepAwake();
   setTimeout(()=>{const x=document.getElementById("exs");x&&x.classList.remove("fresh")},1200);
+}
+function warmTip(){
+  const k=CARDIO.find(c=>S.prof.eq.includes(c));
+  const where=k?`en la <b>${esc(EQ[k].n.toLowerCase())}</b>`:"caminando o con saltos suaves";
+  const fin=S.prof.goal==="grasa"&&k?` Al terminar, 10 a 15 minutos más ${where}.`:"";
+  return `<div class="warm">${k?`<span class="thumb">${eqPic(k)}</span>`:""}<p><b>Antes de empezar:</b> 5 minutos suaves ${where}, y una serie liviana del primer ejercicio.${fin}</p></div>`;
 }
 function tick(){
   const c=document.getElementById("clock");if(!c||!S.active){clearInterval(clockT);return}
@@ -1173,10 +1278,10 @@ function updProg(){
 }
 function exCard(i){
   const e=S.active.ex[i],ex=EX[e.id],t=target(ex),sg=suggest(e.id),done=e.s.every(s=>s.ok),bw=!ex.r;
-  const main=ex.eq[0]?EQ[ex.eq[0]].svg:EQ.colchoneta.svg;
+  const main=ex.eq[0]||"colchoneta";
   const tip=e.fb?`<div class="tip ${e.fb.kind}">${e.fb.msg}</div>`:`<div class="tip ${sg.kind||""}">${sg.msg}</div>`;
   return `<article class="ex${done?" done":""}" id="ex${i}">
-   <div class="ex-top"><div class="ex-art">${pic(main)}${ex.a?`<span class="att">${pic(ATT[ex.a].svg)}</span>`:""}</div>
+   <div class="ex-top"><div class="ex-art">${eqPic(main)}${ex.a?`<span class="att">${pic(ATT[ex.a].svg)}</span>`:""}</div>
     <div class="ex-info"><h3>${esc(ex.n)}</h3>${gTag(ex.g)}<div class="ex-use">${esc(ex.m)}<br>Usás: <b>${esc(useLine(ex))}</b></div></div></div>
    <div class="ex-num"><span class="pill acc">${t.sets} series × ${t.lo}–${t.hi}${t.sec?" seg":" reps"}</span><span class="pill">Descanso ${t.rest>=60?Math.floor(t.rest/60)+":"+String(t.rest%60).padStart(2,"0"):t.rest+" s"}</span></div>
    ${tip}
@@ -1376,7 +1481,13 @@ function equipGrid(){
   <div class="opts" style="margin-bottom:8px">${Object.keys(GYMS).map(k=>`<button class="opt${gy===k?" on":""}" data-act="gym" data-v="${k}"><div><b>${esc(GYMS[k].n)}</b><span>${esc(GYMS[k].s)}</span></div><span class="rd">${gy===k?ic("check",16):""}</span></button>`).join("")}</div>
   ${gy==="smartfit"?`<p class="note" style="margin-bottom:12px">Es la lista que Smart Fit publica para sus gimnasios. Tu sucursal puede tener alguna diferencia: quitá lo que no veas.</p>`:""}
   <div class="h2" style="font-size:18px">Las máquinas</div>
-  <div class="eqgrid">${EQ_ORDER.map(k=>{const on=S.prof.eq.includes(k);return `<button class="eq${on?" on":""}" data-act="eq" data-v="${k}" aria-pressed="${on}"><span class="ck">${ic("check",15)}</span><div class="art">${pic(EQ[k].svg)}</div><b>${esc(EQ[k].n)}</b><span>${esc(EQ[k].d)}</span></button>`}).join("")}</div>`;
+  <div class="eqgrid">${EQ_ORDER.map(eqBtn).join("")}</div>
+  <div class="h2" style="font-size:18px">Cardio<small>Para calentar antes de entrenar.</small></div>
+  <div class="eqgrid">${CARDIO.map(eqBtn).join("")}</div>`;
+}
+function eqBtn(k){
+  const on=S.prof.eq.includes(k);
+  return `<button class="eq${on?" on":""}" data-act="eq" data-v="${k}" aria-pressed="${on}"><span class="ck">${ic("check",15)}</span><div class="art">${eqPic(k)}</div><b>${esc(EQ[k].n)}</b><span>${esc(EQ[k].d)}</span></button>`;
 }
 function renderEquip(){
   setBar({title:"Máquinas",backTxt:"Perfil",back:()=>location.hash="#/perfil",always:false});setTabs(null);setDock(null);
@@ -1483,7 +1594,7 @@ document.addEventListener("click",e=>{
     case"resume":location.hash="#/sesion";break;
     case"tmin":P.set("todayMin",+v);route();break;
     case"howsheet":{const ex=EX[b.dataset.id],t=target(ex),sg=suggest(b.dataset.id);
-      openSheet(`<div style="display:flex;gap:12px;align-items:center;margin:6px 0 12px"><div class="ex-art">${pic((ex.eq[0]?EQ[ex.eq[0]]:EQ.colchoneta).svg)}${ex.a?`<span class="att">${pic(ATT[ex.a].svg)}</span>`:""}</div><div><h2 style="margin:0">${esc(ex.n)}</h2>${gTag(ex.g)}</div></div>
+      openSheet(`<div style="display:flex;gap:12px;align-items:center;margin:6px 0 12px"><div class="ex-art">${eqPic(ex.eq[0]||"colchoneta")}${ex.a?`<span class="att">${pic(ATT[ex.a].svg)}</span>`:""}</div><div><h2 style="margin:0">${esc(ex.n)}</h2>${gTag(ex.g)}</div></div>
        <div class="ex-num" style="padding:0 0 10px"><span class="pill acc">${t.sets} × ${t.lo}–${t.hi}${t.sec?" seg":" reps"}</span></div><div class="tip ${sg.kind||""}" style="margin:0 0 10px">${sg.msg}</div>${howHTML(b.dataset.id,true).replace('class="how"','class="how" style="margin:0"')}`);break;}
     case"w-":case"w+":{const ex=EX[A.ex[i].id],s=A.ex[i].s[j];s.w=Math.max(0,Math.round((s.w+(a==="w+"?1:-1)*inc(ex))*10)/10);save();const el=document.getElementById(`w${i}_${j}`);if(el){el.value=fmtW(s.w);bump(el)}break;}
     case"r-":case"r+":{const s=A.ex[i].s[j];s.r=Math.max(0,s.r+(a==="r+"?(EX[A.ex[i].id].sec?5:1):(EX[A.ex[i].id].sec?-5:-1)));save();const el=document.getElementById(`r${i}_${j}`);if(el){el.value=s.r;bump(el)}break;}

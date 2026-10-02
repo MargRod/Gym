@@ -133,6 +133,7 @@ body.no-tabs .tabs{transform:translateY(110%)}
 .stat{background:var(--card);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow-sm)}
 .stat b{display:block;font-size:26px;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}
 .stat span{color:var(--text2);font-size:13.5px}
+.stat b small{font-size:14px;font-weight:800;color:var(--text2)}
 
 /* listas agrupadas */
 .list{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm)}
@@ -328,6 +329,21 @@ button.row:active{background:var(--fill)}
 .empty b{display:block;color:var(--text);font-size:19px;margin-bottom:4px}
 
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:80}
+
+/* gráfica de progreso de un ejercicio (una serie: color de la app; ejes y grilla discretos) */
+.chartc{background:var(--card);border-radius:18px;padding:12px 10px 10px;box-shadow:var(--shadow-sm)}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart .grid{stroke:var(--sep);stroke-width:1}
+.chart .ax{fill:var(--text2);font-size:10.5px;font-weight:700;font-family:var(--font);font-variant-numeric:tabular-nums}
+.chart .ln{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.chart .area{fill:var(--accent);fill-opacity:.1}
+.chart .pt{fill:var(--accent);stroke:var(--card);stroke-width:2}
+.chart .hit{fill:transparent;cursor:pointer}
+.chart-tip{margin:6px 4px 0;font-size:14px;color:var(--text2);text-align:center;min-height:20px}
+.chart-tip.on{color:var(--text);font-weight:800}
+.notebox{width:100%;min-height:76px;border:0;border-radius:14px;background:var(--card);color:var(--text);padding:12px;font:inherit;font-size:15.5px;resize:vertical;box-shadow:var(--shadow-sm)}
+.mynote{margin:0 14px 10px;padding:9px 12px;border-radius:14px;background:var(--fill);font-size:14.5px;line-height:1.4;display:flex;gap:8px;align-items:flex-start}
+.mynote svg{flex:none;margin-top:2px;color:var(--accent)}
 
 /* día de descanso y avisos */
 .today.rest{background:linear-gradient(135deg,#5856D6 0%,#7D7AFF 100%);box-shadow:0 14px 34px -12px #5856D6}
@@ -853,12 +869,13 @@ const ic=(n,s)=>`<svg width="${s||22}" height="${s||22}" viewBox="0 0 24 24" fil
 /* ---------- estado ---------- */
 // plan.mode: "auto" = la app arma la semana · "fijo" = el usuario eligió qué hace cada día (week: 0=domingo … 6=sábado → día o "descanso")
 // custom: la versión propia de cada día (lista de ejercicios) cuando la persona la edita
-const DEF={v:1,t:0,done:false,prof:{sex:"m",age:25,w:140,h:170,unit:"lb",goal:"musculo",exp:"nuevo",days:4,min:60,body:"",eq:EQ_DEFAULT.slice(),plan:{mode:"auto",week:{}}},custom:{},logs:[],del:[],active:null};
+const DEF={v:1,t:0,done:false,prof:{sex:"m",age:25,w:140,h:170,unit:"lb",goal:"musculo",exp:"nuevo",days:4,min:60,body:"",eq:EQ_DEFAULT.slice(),plan:{mode:"auto",week:{}}},custom:{},notes:{},logs:[],del:[],active:null};
 function normalize(s){
   const o=Object.assign(clone(DEF),s||{});
   o.prof=Object.assign(clone(DEF.prof),(s&&s.prof)||{});
   o.prof.plan=Object.assign({mode:"auto",week:{}},o.prof.plan||{});
   o.custom=o.custom&&typeof o.custom==="object"?o.custom:{};
+  o.notes=o.notes&&typeof o.notes==="object"?o.notes:{};
   o.logs=Array.isArray(o.logs)?o.logs:[];o.del=Array.isArray(o.del)?o.del:[];
   return o;
 }
@@ -1406,6 +1423,7 @@ function exCard(i){
     <div class="ex-info"><h3>${esc(ex.n)}</h3>${gTag(ex.g)}<div class="ex-use">${esc(ex.m)}<br>Usás: <b>${esc(useLine(ex))}</b></div></div></div>
    <div class="ex-num"><span class="pill acc">${t.sets} series × ${t.lo}–${t.hi}${t.sec?" seg":" reps"}</span><span class="pill">Descanso ${t.rest>=60?Math.floor(t.rest/60)+":"+String(t.rest%60).padStart(2,"0"):t.rest+" s"}</span></div>
    ${tip}
+   ${S.notes[e.id]?`<div class="mynote">${ic("info",15)}<span><b>Tu nota:</b> ${esc(S.notes[e.id])}</span></div>`:""}
    ${howHTML(e.id,false)}
    ${wNote(ex)?`<p class="note" style="margin:-2px 18px 8px;font-size:13.5px">${esc(wNote(ex))}</p>`:""}
    <div class="sets"><div class="sets-h"><span>#</span><span>${bw?"":"Peso ("+esc(unitLbl(ex))+")"}</span><span>${t.sec?"Segundos":"Reps"}</span><span></span></div>
@@ -1417,7 +1435,7 @@ function exCard(i){
      <button class="check" data-act="chk" data-i="${i}" data-j="${j}" aria-label="Serie hecha">${ic("check",24)}</button></div>`).join("")}
    </div>
    ${done?`<div class="feel"><p>¿Cómo se sintió?</p><div class="chips">${[["facil","Fácil"],["justo","Justo"],["limite","Al límite"]].map(([v,l])=>`<button class="chip sm${e.f===v?" on":""}" data-act="feel" data-i="${i}" data-v="${v}">${l}</button>`).join("")}</div></div>`:""}
-   <div class="ex-foot"><button class="chip" data-act="addset" data-i="${i}">${ic("plus",16)} Serie</button><button class="chip" data-act="swap" data-i="${i}">${ic("swap",16)} Cambiar</button><button class="chip" data-act="rm" data-i="${i}">${ic("trash",16)} Quitar</button></div>
+   <div class="ex-foot"><button class="chip" data-act="addset" data-i="${i}">${ic("plus",16)} Serie</button><button class="chip" data-act="swap" data-i="${i}">${ic("swap",16)} Cambiar</button><button class="chip" data-act="rm" data-i="${i}">${ic("trash",16)} Quitar</button><button class="chip" data-act="note" data-id="${e.id}">${ic("info",16)} Nota</button><button class="chip" data-act="exdet" data-id="${e.id}">${ic("list",16)} Historial</button></div>
   </article>`;
 }
 function rerenderEx(i){const el=document.getElementById("ex"+i);if(el){const open=el.querySelector("details.how")?.open;el.outerHTML=exCard(i);if(open)document.querySelector("#ex"+i+" details.how").open=true}updProg()}
@@ -1439,6 +1457,7 @@ function finishSession(){
   const ex=A.ex.filter(e=>e.s.some(s=>s.ok)).map(e=>({id:e.id,s:e.s.filter(s=>s.ok).map(s=>({w:s.w,r:s.r,ok:true})),f:e.f||"justo"}));
   if(!ex.length){openSheet(`<h2>Todavía no marcaste ninguna serie</h2><p class="sub">Tocá el ✓ en cada serie que hagas. Si querés salir sin guardar, descartá el entrenamiento.</p>
     <div style="display:flex;flex-direction:column;gap:10px"><button class="big" data-act="sheet-close">Seguir entrenando</button><button class="big ghost" data-act="discard" style="color:var(--bad)">Descartar entrenamiento</button></div>`);return}
+  const prs=ex.map(e=>{const b=bestOf(e.id),v=EX[e.id].r?Math.max(...e.s.map(s=>s.w)):Math.max(...e.s.map(s=>s.r));return b!=null&&v>b?{id:e.id,v,b}:null}).filter(Boolean);
   const log={id:A.id,d:new Date(A.start).toISOString(),day:A.day,si:A.si,dur:Math.max(1,Math.round((Date.now()-A.start)/60000)),ex,u:Date.now()};
   S.logs.push(log);S.active=null;save();stopRest();clearInterval(clockT);
   try{wake&&wake.release()}catch(e){}
@@ -1448,6 +1467,7 @@ function finishSession(){
   setTimeout(()=>{confetti();openSheet(`<div style="text-align:center;padding-top:6px"><div class="welcome-art" style="margin:10px auto 14px;width:84px;height:84px;border-radius:24px">${ic("check",48)}</div>
     <h2>¡Entrenamiento listo!</h2><p class="sub">${esc(DAYS[log.day].n)} · ${log.dur} min</p></div>
     <div class="stats" style="margin-top:6px"><div class="stat"><b>${ex.length}</b><span>ejercicios</span></div><div class="stat"><b>${sets}</b><span>series</span></div><div class="stat"><b>${Math.round(vol).toLocaleString("es")}</b><span>${U()} movidas</span></div></div>
+    ${prs.map(p=>`<div class="tip good pr" style="margin:12px 0 0">${ic("flag",16).replace("<svg","<svg style='display:inline;vertical-align:-3px'")} <b>Récord nuevo</b> en ${esc(EX[p.id].n)}: ${EX[p.id].r?fmtW(p.v)+" "+U():p.v+(EX[p.id].sec?" s":" reps")} (antes ${EX[p.id].r?fmtW(p.b):p.b}).</div>`).join("")}
     ${notes.map(n=>`<div class="tip good" style="margin:12px 0 0">${ic("bolt",16).replace("<svg","<svg style='display:inline;vertical-align:-3px'")} ${n}</div>`).join("")}
     <p class="note">La próxima vez que hagas estos ejercicios te digo cuánto cargar según cómo te fue hoy. Comé algo con proteína en las próximas horas.</p>
     <button class="big" data-act="sheet-close" style="width:100%;margin-top:14px">Listo</button>`)},350);
@@ -1547,7 +1567,7 @@ function renderProgress(){
   <div class="stats"><div class="stat"><b>${weekCount()}</b><span>esta semana</span></div><div class="stat"><b>${S.logs.length}</b><span>entrenos</span></div><div class="stat"><b>${totMin>=120?Math.round(totMin/60)+" h":totMin+" m"}</b><span>entrenado</span></div></div>
   <div class="card" style="margin-top:12px"><b style="font-size:16px">Entrenos por semana</b><span class="muted" style="font-size:14px"> · meta ${S.prof.days}</span>
    <div class="bars">${weeks.map(w=>`<div><i class="${w.n?"":"zero"}" style="height:${Math.max(4,w.n/mx*70)}px"></i><span>${w.n}</span></div>`).join("")}</div></div>
-  ${bestIds.length?`<div class="h2">Tus mejores marcas</div><div class="list">${bestIds.map(id=>`<div class="row">${thumbEx(id)}<span class="name">${esc(EX[id].n)}<small>${new Date(best[id].d).toLocaleDateString("es",{day:"numeric",month:"short"})}</small></span><span class="meta">${EX[id].r?`${fmtW(best[id].v)} ${U()} × ${best[id].r}`:`${best[id].v}${EX[id].sec?" s":" reps"}`}</span></div>`).join("")}</div>`:""}
+  ${bestIds.length?`<div class="h2">Tus mejores marcas</div><div class="list">${bestIds.map(id=>`<button class="row" data-act="exdet" data-id="${id}">${thumbEx(id)}<span class="name">${esc(EX[id].n)}<small>${new Date(best[id].d).toLocaleDateString("es",{day:"numeric",month:"short"})}</small></span><span class="meta">${EX[id].r?`${fmtW(best[id].v)} ${U()} × ${best[id].r}`:`${best[id].v}${EX[id].sec?" s":" reps"}`}</span>${ic("chev",18)}</button>`).join("")}</div>`:""}
   <div class="h2">Historial</div>
   ${logs.length?`<div class="list">${logs.map(l=>`<button class="row" data-act="log" data-id="${l.id}"><span class="dot" style="width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;background:${dayColor(l)}">${ic("dumbbell",19)}</span><span class="name">${esc(dayLbl(l))}<small>${cap(dateLbl(l.d))}</small></span><span class="meta">${l.q?"registrado":l.dur+" min"}</span>${ic("chev",18)}</button>`).join("")}</div>`:
    `<div class="empty"><div class="thumb">${ic("flag",36)}</div><b>Todavía no hay entrenos</b>Cuando termines el primero, aparece acá.</div>`}`;
@@ -1585,9 +1605,9 @@ function renderProfile(){
   </div>
   <div class="h2">Respaldo</div>
   ${accountHTML()}
-  <div class="list" style="margin-top:${inClaude()?0:12}px">${brow("backup","copy","Copiar respaldo","")}${brow("restore","cloud","Pegar respaldo","")}</div>
+  <div class="list" style="margin-top:${inClaude()?0:12}px">${brow("export","list","Exportar a Excel","")}${brow("backup","copy","Copiar respaldo","")}${brow("restore","cloud","Pegar respaldo","")}</div>
   <div class="h2">Acerca de</div>
-  <div class="list">${brow("share-app","flag","Compartir la app","QR")}${brow("credits","info","Créditos","")}</div>
+  <div class="list">${brow("share-app","flag","Compartir la app","QR")}<a class="row press" href="https://margrod.github.io/Gym/privacidad.html" target="_blank" rel="noopener" style="color:inherit"><span class="thumb" style="width:34px;height:34px;border-radius:10px">${ic("info",19)}</span><span class="name">Privacidad</span><span class="meta"></span>${ic("chev",18)}</a>${brow("credits","info","Créditos","")}</div>
   <div id="resetZone" style="margin-top:22px"><button class="big ghost" data-act="reset-ask" style="width:100%;color:var(--bad)">Empezar de cero</button></div>
   <p class="note" style="text-align:center">Gym Guía · consejos generales, no reemplazan a un entrenador ni a un médico.</p>`;
 }
@@ -1782,6 +1802,12 @@ document.addEventListener("click",e=>{
     case"pv-save":{const day=PE.day;S.custom[day]=PE.ids.slice();PE=null;save();renderPreview(day);toast("Guardé tu versión de "+esc(DAYS[day].n.toLowerCase()));break;}
     case"pv-reset":{const day=PE.day;delete S.custom[day];PE=null;save();renderPreview(day);toast("Volviste a la rutina de la app");break;}
     case"share-app":shareSheet();break;
+    case"exdet":exDetail(b.dataset.id);break;
+    case"note":exDetail(b.dataset.id);setTimeout(()=>{const t=document.getElementById("noteTxt");t&&t.scrollIntoView({block:"center"})},500);break;
+    case"note-save":{const id=b.dataset.id,t=$("#noteTxt").value.trim();if(t)S.notes[id]=t;else delete S.notes[id];save();closeSheet();toast(t?"Nota guardada":"Nota borrada");
+      if(S.active&&location.hash.indexOf("sesion")>=0)S.active.ex.forEach((e,k)=>{if(e.id===id)rerenderEx(k)});break;}
+    case"cpt":{const t=$("#ctip");if(t){t.textContent=b.dataset.t;t.classList.add("on")}break;}
+    case"export":exportCSV();break;
     case"share-copy":{const done=()=>toast("Link copiado");try{navigator.clipboard.writeText(QR_URL).then(done,()=>toast(QR_URL))}catch(err){toast(QR_URL)}break;}
     case"share-native":try{navigator.share({title:"Gym Guía",text:"Mirá esta app para el gym",url:QR_URL}).catch(()=>{})}catch(err){}break;
     case"pmin":S.prof.min=+v;P.set("todayMin",+v);save();renderPlan();break;
@@ -1824,6 +1850,56 @@ document.addEventListener("change",e=>{
   const v=parseFloat(t.value);s[t.dataset.k]=isFinite(v)&&v>=0?v:0;save();
 });
 document.addEventListener("focusin",e=>{if(e.target.matches(".field input"))setTimeout(()=>e.target.select(),0)});
+/* ---------- ficha de un ejercicio: récord, gráfica, historial y nota ---------- */
+// mejor marca guardada: peso más alto (o más reps/segundos si es con tu peso)
+function bestOf(id){
+  let b=null;const w=!!EX[id].r;
+  S.logs.forEach(l=>(l.ex||[]).forEach(e=>{if(e.id!==id)return;e.s.forEach(s=>{const v=w?s.w:s.r;if(b==null||v>b)b=v})}));
+  return b;
+}
+function exHistory(id){
+  const w=!!EX[id].r;
+  return S.logs.filter(l=>(l.ex||[]).some(e=>e.id===id)).map(l=>{const e=l.ex.find(x=>x.id===id);
+    const top=e.s.reduce((a,s)=>!a||(w?s.w>a.w||(s.w===a.w&&s.r>a.r):s.r>a.r)?s:a,null);return{d:l.d,v:w?top.w:top.r,r:top.r,s:e.s}});
+}
+function exChart(h,id){
+  const pts=h.slice(-12),w=!!EX[id].r,unit=w?" "+U():EX[id].sec?" s":" reps";
+  if(pts.length<2)return `<div class="card" style="text-align:center"><b>${pts.length?(w?fmtW(pts[0].v):pts[0].v)+unit:"—"}</b><p class="note" style="margin:6px 0 0">Con 2 entrenos de este ejercicio aparece la gráfica de tu progreso.</p></div>`;
+  const W=320,H=150,L=36,R=14,T=14,B=26,vals=pts.map(p=>p.v);let lo=Math.min(...vals),hi=Math.max(...vals);
+  if(hi===lo){lo=Math.max(0,lo-5);hi=hi+5}const pad=(hi-lo)*.15;lo=Math.max(0,lo-pad);hi=hi+pad;
+  const x=i=>L+(W-L-R)*(pts.length===1?.5:i/(pts.length-1)),y=v=>T+(H-T-B)*(1-(v-lo)/(hi-lo));
+  const ticks=[lo,(lo+hi)/2,hi];const fd=d=>new Date(d).toLocaleDateString("es",{day:"numeric",month:"short"}).replace(".","");
+  const line=pts.map((p,i)=>`${i?"L":"M"}${x(i).toFixed(1)} ${y(p.v).toFixed(1)}`).join("");
+  const area=line+`L${x(pts.length-1).toFixed(1)} ${H-B}L${x(0).toFixed(1)} ${H-B}Z`;
+  return `<div class="chartc"><svg viewBox="0 0 ${W} ${H}" class="chart" role="img" aria-label="Progreso de ${esc(EX[id].n)}">
+    ${ticks.map(t=>`<line x1="${L}" x2="${W-R}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}" class="grid"/><text x="${L-6}" y="${(y(t)+3.5).toFixed(1)}" class="ax" text-anchor="end">${Math.round(t)}</text>`).join("")}
+    <path d="${area}" class="area"/><path d="${line}" class="ln"/>
+    ${pts.map((p,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="${i===pts.length-1?5:3.5}" class="pt${i===pts.length-1?" last":""}"/><circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="14" class="hit" data-act="cpt" data-t="${esc(cap(fd(p.d)))}: ${w?fmtW(p.v)+" "+U()+" × "+p.r:p.v+unit}"/>`).join("")}
+    <text x="${L}" y="${H-6}" class="ax">${esc(fd(pts[0].d))}</text><text x="${W-R}" y="${H-6}" class="ax" text-anchor="end">${esc(fd(pts[pts.length-1].d))}</text></svg>
+    <p class="chart-tip" id="ctip">Tocá un punto para ver el detalle.</p></div>`;
+}
+function exDetail(id){
+  const ex=EX[id],h=exHistory(id),w=!!ex.r,b=bestOf(id),unit=w?" "+U():ex.sec?" s":" reps";
+  const first=h[0],last=h[h.length-1],gain=h.length>1?last.v-first.v:0;
+  openSheet(`<div style="display:flex;gap:12px;align-items:center;margin:6px 0 12px"><div class="ex-art">${eqPic(ex.eq[0]||"colchoneta")}</div><div><h2 style="margin:0">${esc(ex.n)}</h2>${gTag(ex.g)}</div></div>
+   <div class="stats" style="margin-top:0"><div class="stat"><b>${b==null?"—":(w?fmtW(b):b)+`<small>${unit}</small>`}</b><span>tu récord</span></div><div class="stat"><b>${h.length}</b><span>${h.length===1?"vez":"veces"}</span></div><div class="stat"><b>${h.length>1?(gain>=0?"+":"")+(w?fmtW(gain):gain)+`<small>${unit}</small>`:"—"}</b><span>desde la primera</span></div></div>
+   <div class="h2" style="font-size:18px">Tu progreso<small>El mejor ${w?"peso":"número"} de cada entreno.</small></div>${exChart(h,id)}
+   <div class="h2" style="font-size:18px">Tu nota<small>Para acordarte: altura del asiento, agarre, molestias…</small></div>
+   <textarea id="noteTxt" class="notebox" placeholder="Ej.: asiento en el 4, agarre abierto" maxlength="300">${esc(S.notes[id]||"")}</textarea>
+   <button class="big" data-act="note-save" data-id="${id}" style="width:100%;margin-top:10px">Guardar nota</button>
+   ${h.length?`<div class="h2" style="font-size:18px">Cada vez que lo hiciste</div><div class="list">${h.slice().reverse().map(x=>`<div class="row"><span class="name">${cap(new Date(x.d).toLocaleDateString("es",{weekday:"short",day:"numeric",month:"short"}).replace(".",""))}<small>${x.s.map(s=>w?fmtW(s.w)+"×"+s.r:s.r+(ex.sec?" s":"")).join(" · ")}</small></span>${x.v===b?`<span class="pill acc">Récord</span>`:""}</div>`).join("")}</div>`:""}`);
+}
+function exportCSV(){
+  const rows=[["Fecha","Día","Ejercicio","Grupo","Serie","Peso ("+U()+")","Repeticiones","Sensación"]];
+  S.logs.forEach(l=>{const f=new Date(l.d).toLocaleDateString("es-GT");
+    if(!(l.ex||[]).length){rows.push([f,dayLbl(l),"(registro rápido)","","","","",""]);return}
+    l.ex.forEach(e=>e.s.forEach((s,k)=>rows.push([f,dayLbl(l),EX[e.id]?EX[e.id].n:e.id,EX[e.id]?GROUPS[EX[e.id].g].n:"",k+1,EX[e.id]&&EX[e.id].r?s.w:"",s.r,({facil:"Fácil",justo:"Justo",limite:"Al límite"})[e.f]||""])))});
+  const csv="﻿"+rows.map(r=>r.map(v=>{const t=String(v);return /[",;\n]/.test(t)?'"'+t.replace(/"/g,'""')+'"':t}).join(",")).join("\r\n");
+  if(inClaude()){openSheet(`<h2>Tus entrenos</h2><p class="sub">Copiá este texto y pegalo en Excel o Google Sheets.</p><textarea readonly class="notebox" style="height:220px;font-size:12px">${esc(csv.slice(1))}</textarea>`);return}
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  a.download="mis-entrenos-"+new Date().toISOString().slice(0,10)+".csv";document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);toast("Listo: se descargó tu archivo para Excel");
+}
 function shareSheet(){
   openSheet(`<div style="text-align:center"><h2>Compartir la app</h2><p class="sub">Que la escaneen con la cámara del teléfono. Se instala en un toque.</p></div>
    <div class="qrbox">${QR_SVG}</div>

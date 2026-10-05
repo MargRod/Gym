@@ -512,6 +512,32 @@ a.big{text-decoration:none}
 html.theming,html.theming *{transition:background-color .5s var(--ease),color .5s var(--ease),border-color .5s var(--ease),box-shadow .5s var(--ease)!important}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .art.anim img.a{opacity:var(--art-op)!important} .art.anim img.b{display:none}}
+
+/* ===== 5-oct: aclaración del dibujo, tarjeta de hoy tocable, cardio en lista y brillos ===== */
+.art-cap{margin:8px 6px 0;font-size:13.5px;line-height:1.4;color:var(--text2);text-align:center}
+.hero-top{display:block;color:#fff;text-decoration:none;border-radius:16px;margin:-6px -8px 0;padding:6px 8px}
+.hero-top h2{display:flex;align-items:center;gap:4px}
+.hero-top h2 svg{flex:none;opacity:.7;transition:transform .5s var(--spring)}
+.hero-top:active h2 svg{transform:translateX(3px)}
+.eqrow .ck{width:26px;height:26px;border-radius:50%;background:var(--fill2);display:grid;place-items:center;color:transparent;flex:none;transition:background .2s,color .2s,box-shadow .3s}
+.eqrow.on .ck{background:var(--accent);color:var(--on-accent)}
+.eqrow:not(.on) .ico{opacity:.5}
+
+/* brillos: suaves, siempre del color de la app, más notorios en oscuro */
+:root{--glow:rgba(242,84,27,.30);--glow-soft:rgba(242,84,27,.14);--glow-good:rgba(52,199,89,.28)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--glow:rgba(255,122,61,.45);--glow-soft:rgba(255,122,61,.20);--glow-good:rgba(48,209,88,.32)}}
+:root[data-theme="dark"]{--glow:rgba(255,122,61,.45);--glow-soft:rgba(255,122,61,.20);--glow-good:rgba(48,209,88,.32)}
+.big:not(.ghost):not(:disabled){box-shadow:0 10px 26px -10px var(--glow)}
+.tab.on svg{filter:drop-shadow(0 0 7px var(--glow))}
+.chip.on,.chip.acc{box-shadow:0 6px 16px -6px var(--glow)}
+.wd.today .wc{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--accent),0 0 18px var(--glow)}
+.ring .fg{filter:drop-shadow(0 0 6px var(--glow))}
+.rest.show{box-shadow:var(--shadow),0 0 0 1px var(--glow-soft),0 14px 40px -14px var(--glow)}
+.eq.on{box-shadow:0 0 0 2.5px var(--accent),0 10px 26px -12px var(--glow)}
+.eqrow.on .ck{box-shadow:0 0 12px var(--glow)}
+.stage{box-shadow:var(--shadow-sm),0 0 0 1px var(--glow-soft),0 16px 40px -22px var(--glow)}
+.set.ok{box-shadow:0 0 0 1px var(--glow-good),0 6px 18px -10px var(--glow-good)}
+.hero{box-shadow:0 16px 40px -14px var(--accent),0 0 60px -30px var(--accent)}
 </style>
 <div id="app" class="app">
 <header id="bar" class="bar"><div class="bar-in" id="barIn">
@@ -613,7 +639,7 @@ const EQ_DEFAULT = ["prensa","extension","curl_femoral","abductor","pantorrilla"
 const CARDIO = ["eliptica","bici","caminadora","escaladora"]; // en este orden se elige para calentar (de menor a mayor impacto)
 const GYMS = {
   // Lo que el usuario vio en su sucursal el 2-oct-2026 (maquinas.json + fotos). Jalón, mancuernas y bancos salen de las fotos.
-  santaclara:{n:"Smart Fit Santa Clara",s:"Lo que viste en tu sucursal (2 de octubre)",eq:["prensa","gluteo_maq","extension","curl_femoral","abductor","press_pecho","press_hombro","remo","triceps_maq","curl_maq","abs_maq","hiperextension","poleas","jalon","mancuernas","banco","colchoneta","caminadora","eliptica","escaladora","bici"]},
+  santaclara:{n:"Smart Fit Santa Clara",s:"Lo que viste en tu sucursal (2 y 5 de octubre)",eq:["prensa","gluteo_maq","extension","curl_femoral","abductor","press_pecho","pec_deck","press_hombro","remo","triceps_maq","curl_maq","abs_maq","hiperextension","poleas","jalon","mancuernas","banco","colchoneta","caminadora","eliptica","escaladora","bici"]},
   smartfit:{n:"Smart Fit",s:"Lista oficial de máquinas de la cadena",eq:["prensa","prensa_h","extension","curl_femoral","abductor","maq_hip","pantorrilla","hack","smith","mancuernas","banco","poleas","jalon","remo","press_pecho","pec_deck","press_hombro","curl_maq","triceps_maq","abs_maq","asistida","hiperextension","colchoneta"]},
   comun:{n:"Gimnasio común",s:"Las máquinas más típicas",eq:EQ_DEFAULT},
   completo:{n:"Gimnasio completo",s:"Con rack de sentadilla y de todo",eq:EQ_ORDER.concat(CARDIO)}
@@ -624,6 +650,7 @@ const ATT = {
   barra_recta:{n:"Barra recta corta",d:"Barrita recta de unos 50 cm",svg:'<circle cx="32" cy="11" r="4"/><path d="M32 15v12"/><path d="M8 30h48" stroke-width="6"/>'},
   barra_v:{n:"Agarre en V (triángulo)",d:"Dos manijas juntas, palmas enfrentadas",svg:'<circle cx="32" cy="9" r="4"/><path d="M32 13v7M32 20L19 46M32 20l13 26"/><path d="M14 48h11M39 48h11" stroke-width="6"/>'},
   manija:{n:"Manija individual",d:"Agarradera en D para una mano",svg:'<circle cx="32" cy="9" r="4"/><path d="M32 13v8M20 23h24M20 23l4 24h16l4-24"/><path d="M22 47h20" stroke-width="6"/>'},
+  tobillera:{n:"Tobillera",d:"Correa que se abrocha al tobillo",svg:'<circle cx="32" cy="9" r="4"/><path d="M32 13v12"/><path d="M18 30h28a6 6 0 016 6v6a6 6 0 01-6 6H18a6 6 0 01-6-6v-6a6 6 0 016-6z" stroke-width="4"/><path d="M24 39h16" stroke-width="3"/>'},
   barra_larga:{n:"Barra larga de jalón",d:"Barra ancha con las puntas dobladas",svg:'<circle cx="32" cy="8" r="4"/><path d="M32 12v10"/><path d="M4 30c6-9 50-9 56 0" stroke-width="5"/>'}
 };
 
@@ -705,6 +732,9 @@ const EX = {
   patada_maq:{n:"Patada de glúteo en máquina",g:"gluteo",m:"Glúteo",pat:"glute",eq:["gluteo_maq"],k:"i",r:.25,lvl:1,
     how:["Apoyá el pecho en la almohadilla y agarrá las manijas.","Un pie en la plataforma; el otro contra la palanca, atrás.","Empujá la palanca hacia atrás y arriba con el talón, apretando el glúteo.","Volvé despacio. Hacé todas y cambiá de pierna."],
     err:["Arquear la espalda baja para subir más","Usar impulso"],yt:"patada de glúteo en máquina técnica"},
+  patada_polea:{n:"Patada de glúteo en polea",g:"gluteo",m:"Glúteo",pat:"glute",eq:["poleas"],a:"tobillera",k:"i",r:.1,lvl:1,
+    how:["Poné la polea abajo y abrochate la tobillera en un tobillo.","Parate de frente a la máquina y agarrate de ella.","Llevá la pierna hacia atrás con la rodilla casi estirada, apretando el glúteo.","Volvé despacio. Hacé todas y cambiá de pierna."],
+    err:["Arquear la espalda baja para subir más","Balancear la pierna con impulso"],yt:"patada de glúteo en polea con tobillera técnica"},
   hip_maq:{n:"Hip thrust en máquina",g:"gluteo",m:"Glúteo",pat:"glute",eq:["maq_hip"],k:"c",r:.4,lvl:1,
     how:["Espalda alta apoyada en el respaldo y la almohadilla sobre la cadera.","Pies apoyados, rodillas a 90° arriba.","Subí la cadera apretando el glúteo y aguantá 1 segundo.","Bajá despacio."],
     err:["Arquear la espalda baja en vez de usar el glúteo"],yt:"hip thrust máquina técnica"},
@@ -773,6 +803,9 @@ const EX = {
   reverse_deck:{n:"Aperturas invertidas (pec deck)",g:"hombro",m:"Hombro de atrás",pat:"rear",eq:["pec_deck"],k:"i",r:.2,lvl:1,
     how:["Sentate al revés, con el pecho contra el respaldo.","Agarrá las manijas con los brazos estirados al frente, a la altura del pecho.","Abrí los brazos hacia atrás hasta donde puedas.","Volvé despacio al centro."],
     err:["Doblar los codos","Usar impulso"],yt:"pec deck invertido deltoides posterior"},
+  aperturas_polea:{n:"Aperturas invertidas en polea",g:"hombro",m:"Hombro de atrás y espalda alta",pat:"rear",eq:["poleas"],a:"manija",k:"i",r:.05,per:"lado",lvl:1,
+    how:["Poné las dos poleas a la altura del pecho, con una manija en cada una.","Cruzá los cables: la mano derecha agarra la polea izquierda y la izquierda la derecha.","Con los brazos casi estirados, abrí hacia atrás hasta que queden en cruz.","Volvé despacio al centro."],
+    err:["Mucho peso y jalar con la espalda","Doblar mucho los codos"],yt:"reverse fly en polea deltoides posterior"},
   pajaros:{n:"Pájaros con mancuernas",g:"hombro",m:"Hombro de atrás",pat:"rear",eq:["mancuernas"],k:"i",r:.04,per:"mano",lvl:1,
     how:["Inclinate hacia adelante con la espalda recta.","Mancuernas colgando, codos apenas doblados.","Abrí los brazos a los lados hasta la altura de los hombros.","Bajá despacio."],
     err:["Mucho peso","Subir con impulso"],yt:"pájaros con mancuernas deltoides posterior"},
@@ -925,9 +958,9 @@ const QR_URL="https://margrod.github.io/Gym/instalar.html?g=sc";
 const QR_SVG="<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 39 39\" class=\"segno\"><path fill=\"#fff\" d=\"M0 0h39v39h-39z\"/><path class=\"qrline\" stroke=\"#111\" d=\"M3 3.5h7m2 0h1m1 0h1m6 0h4m1 0h1m2 0h7m-33 1h1m5 0h1m5 0h1m2 0h2m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m2 0h2m1 0h3m3 0h5m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m6 0h1m5 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h4m3 0h1m1 0h2m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h4m1 0h2m2 0h3m2 0h1m3 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h1m1 0h3m1 0h1m1 0h1m1 0h6m-24 1h1m1 0h5m2 0h2m2 0h2m2 0h4m1 0h2m2 0h5m-30 1h3m3 0h1m2 0h4m2 0h5m2 0h1m2 0h2m1 0h4m-32 1h1m4 0h6m1 0h5m3 0h2m2 0h2m1 0h1m1 0h2m-25 1h2m1 0h1m1 0h2m1 0h1m1 0h2m2 0h3m2 0h1m1 0h5m-33 1h3m2 0h2m1 0h1m2 0h1m2 0h1m1 0h1m2 0h2m1 0h1m2 0h1m1 0h3m-30 1h1m2 0h1m3 0h2m2 0h1m1 0h1m1 0h1m1 0h2m2 0h4m1 0h2m1 0h4m-32 1h3m2 0h1m2 0h4m2 0h3m2 0h3m1 0h5m1 0h2m-32 1h4m1 0h1m1 0h2m1 0h1m3 0h2m2 0h1m2 0h1m3 0h3m1 0h2m-31 1h2m2 0h1m1 0h2m1 0h3m1 0h5m5 0h3m1 0h2m3 0h1m-32 1h1m1 0h2m2 0h3m1 0h1m4 0h1m1 0h4m1 0h1m2 0h2m1 0h4m-28 1h2m1 0h2m1 0h2m1 0h3m1 0h1m5 0h1m1 0h3m1 0h2m-32 1h3m1 0h1m2 0h2m1 0h1m2 0h2m1 0h1m3 0h5m2 0h4m1 0h1m-33 1h1m1 0h1m1 0h6m2 0h1m2 0h1m2 0h1m3 0h1m1 0h2m2 0h2m1 0h2m-33 1h3m1 0h2m3 0h1m1 0h1m2 0h4m2 0h1m2 0h1m1 0h2m3 0h1m1 0h1m-33 1h1m1 0h1m1 0h1m1 0h1m1 0h4m1 0h1m4 0h2m2 0h1m2 0h2m2 0h3m-32 1h1m1 0h4m3 0h2m1 0h1m1 0h1m1 0h1m2 0h3m3 0h1m1 0h1m1 0h2m-31 1h1m1 0h1m1 0h5m2 0h1m1 0h1m3 0h1m1 0h2m1 0h7m-21 1h3m1 0h1m2 0h7m1 0h2m3 0h1m1 0h1m1 0h1m-33 1h7m4 0h2m1 0h4m2 0h1m2 0h2m1 0h1m1 0h1m1 0h2m-32 1h1m5 0h1m1 0h4m4 0h3m2 0h4m3 0h4m-32 1h1m1 0h3m1 0h1m1 0h2m3 0h1m2 0h1m2 0h1m1 0h1m2 0h6m2 0h1m-33 1h1m1 0h3m1 0h1m1 0h3m1 0h4m1 0h2m2 0h1m1 0h3m2 0h2m1 0h2m-33 1h1m1 0h3m1 0h1m1 0h2m4 0h4m4 0h1m1 0h1m1 0h2m2 0h1m-31 1h1m5 0h1m4 0h2m2 0h1m5 0h2m2 0h1m2 0h3m-31 1h7m1 0h4m2 0h2m1 0h2m3 0h3m2 0h1m3 0h1\"/></svg>";
 
 // Generado por scripts/make_art.py — no editar a mano.
-const ART = {"prensa":{"a":"art/prensa-a.svg","b":"art/prensa-b.svg","r":1.416,"c":"ek"},"sentadilla":{"a":"art/sentadilla-a.svg","b":"art/sentadilla-b.svg","r":0.792,"c":"ek"},"smith_sentadilla":{"a":"art/smith_sentadilla-a.svg","b":"art/smith_sentadilla-b.svg","r":0.784,"c":"ek"},"hack":{"a":"art/hack-a.svg","b":"art/hack-b.svg","r":1.388,"c":"ek"},"zancada":{"a":"art/zancada-a.svg","b":"art/zancada-b.svg","r":0.683,"c":"ek"},"extension":{"a":"art/extension-a.svg","b":"art/extension-b.svg","r":0.648,"c":"ek"},"rumano":{"a":"art/rumano-a.svg","b":"art/rumano-b.svg","r":0.724,"c":"ek"},"rumano_manc":{"a":"art/rumano_manc-a.svg","b":"art/rumano_manc-b.svg","r":0.55,"c":"ek"},"puente_manc":{"a":"art/puente_manc-a.svg","b":"art/puente_manc-b.svg","r":1.707,"c":"ek"},"curl_femoral":{"a":"art/curl_femoral-a.svg","b":"art/curl_femoral-b.svg","r":1.64,"c":"ek"},"abductor":{"a":"art/abductor-a.svg","b":"art/abductor-b.svg","r":0.812,"c":"ek"},"aductor":{"a":"art/aductor-a.svg","b":"art/aductor-b.svg","r":0.82,"c":"ek"},"pantorrilla":{"a":"art/pantorrilla-a.svg","b":"art/pantorrilla-b.svg","r":0.61,"c":"ek"},"pantorrilla_prensa":{"a":"art/pantorrilla_prensa-a.svg","b":"art/pantorrilla_prensa-b.svg","r":1.41,"c":"ek"},"hiperextension":{"a":"art/hiperextension-a.svg","b":"art/hiperextension-b.svg","r":0.879,"c":"ek"},"press_maquina":{"a":"art/press_maquina-a.svg","b":"art/press_maquina-b.svg","r":0.868,"c":"ek"},"press_banca":{"a":"art/press_banca-a.svg","b":"art/press_banca-b.svg","r":0.903,"c":"ek"},"press_manc":{"a":"art/press_manc-a.svg","b":"art/press_manc-b.svg","r":0.734,"c":"ek"},"smith_banca":{"a":"art/smith_banca-a.svg","b":"art/smith_banca-b.svg","r":0.752,"c":"ek"},"inclinado_manc":{"a":"art/inclinado_manc-a.svg","b":"art/inclinado_manc-b.svg","r":0.721,"c":"ek"},"smith_inclinado":{"a":"art/smith_inclinado-a.svg","b":"art/smith_inclinado-b.svg","r":0.777,"c":"ek"},"cruce_poleas":{"a":"art/cruce_poleas-a.svg","b":"art/cruce_poleas-b.svg","r":0.841,"c":"ek"},"aperturas":{"a":"art/aperturas-a.svg","b":"art/aperturas-b.svg","r":0.784,"c":"ek"},"fondos":{"a":"art/fondos-a.svg","b":"art/fondos-b.svg","r":0.504,"c":"ek"},"lagartijas":{"a":"art/lagartijas-a.svg","b":"art/lagartijas-b.svg","r":1.669,"c":"ek"},"jalon":{"a":"art/jalon-a.svg","b":"art/jalon-b.svg","r":0.459,"c":"ek"},"jalon_v":{"a":"art/jalon_v-a.svg","b":"art/jalon_v-b.svg","r":0.473,"c":"ek"},"dominadas":{"a":"art/dominadas-a.svg","b":"art/dominadas-b.svg","r":0.672,"c":"ek"},"remo_sentado":{"a":"art/remo_sentado-a.svg","b":"art/remo_sentado-b.svg","r":1.413,"c":"ek"},"remo_manc":{"a":"art/remo_manc-a.svg","b":"art/remo_manc-b.svg","r":0.88,"c":"ek"},"remo_barra":{"a":"art/remo_barra-a.svg","b":"art/remo_barra-b.svg","r":1.012,"c":"ek"},"pullover":{"a":"art/pullover-a.svg","b":"art/pullover-b.svg","r":0.462,"c":"ek"},"pajaros":{"a":"art/pajaros-a.svg","b":"art/pajaros-b.svg","r":0.989,"c":"ek"},"laterales":{"a":"art/laterales-a.svg","b":"art/laterales-b.svg","r":0.887,"c":"ek"},"curl_manc":{"a":"art/curl_manc-a.svg","b":"art/curl_manc-b.svg","r":0.506,"c":"ek"},"martillo":{"a":"art/martillo-a.svg","b":"art/martillo-b.svg","r":0.487,"c":"ek"},"curl_polea":{"a":"art/curl_polea-a.svg","b":"art/curl_polea-b.svg","r":0.441,"c":"ek"},"curl_cuerda":{"a":"art/curl_cuerda-a.svg","b":"art/curl_cuerda-b.svg","r":0.429,"c":"ek"},"curl_maq":{"a":"art/curl_maq-a.svg","b":"art/curl_maq-b.svg","r":0.683,"c":"ek"},"curl_barra":{"a":"art/curl_barra-a.svg","b":"art/curl_barra-b.svg","r":0.911,"c":"ek"},"triceps_cuerda":{"a":"art/triceps_cuerda-a.svg","b":"art/triceps_cuerda-b.svg","r":0.388,"c":"ek"},"triceps_barra":{"a":"art/triceps_barra-a.svg","b":"art/triceps_barra-b.svg","r":0.392,"c":"ek"},"triceps_manc":{"a":"art/triceps_manc-a.svg","b":"art/triceps_manc-b.svg","r":0.368,"c":"ek"},"triceps_maq":{"a":"art/triceps_maq-a.svg","b":"art/triceps_maq-b.svg","r":0.742,"c":"ek"},"fondos_banco":{"a":"art/fondos_banco-a.svg","b":"art/fondos_banco-b.svg","r":1.382,"c":"ek"},"crunch":{"a":"art/crunch-a.svg","b":"art/crunch-b.svg","r":2.059,"c":"ek"},"elev_piernas":{"a":"art/elev_piernas-a.svg","b":"art/elev_piernas-b.svg","r":1.176,"c":"ek"},"pec_deck":{"a":"art/pec_deck-a.png","b":"art/pec_deck-b.png","r":0.686,"c":"wg"},"press_hombro_maq":{"a":"art/press_hombro_maq-a.png","b":"art/press_hombro_maq-b.png","r":0.684,"c":"wg"},"press_hombro_manc":{"a":"art/press_hombro_manc-a.png","b":"art/press_hombro_manc-b.png","r":0.614,"c":"wg"}};
-const EQ_ART = {"prensa":"prensa","extension":"extension","curl_femoral":"curl_femoral","abductor":"abductor","pantorrilla":"pantorrilla","smith":"smith_sentadilla","barra":"sentadilla","hack":"hack","mancuernas":"curl_manc","banco":"press_manc","poleas":"cruce_poleas","jalon":"jalon","remo":"remo_sentado","press_pecho":"press_maquina","pec_deck":"pec_deck","press_hombro":"press_hombro_maq","torre":"dominadas","hiperextension":"hiperextension","curl_maq":"curl_maq","triceps_maq":"triceps_maq"};
-const ART_CREDIT = {"ek": "Everkinetic · CC BY-SA 4.0", "wg": "wger.de · CC BY-SA 3.0"};
+const ART = {"prensa":{"a":"art/prensa-a.svg","b":"art/prensa-b.svg","r":1.416,"c":"ek"},"sentadilla":{"a":"art/sentadilla-a.svg","b":"art/sentadilla-b.svg","r":0.792,"c":"ek"},"smith_sentadilla":{"a":"art/smith_sentadilla-a.svg","b":"art/smith_sentadilla-b.svg","r":0.784,"c":"ek"},"hack":{"a":"art/hack-a.svg","b":"art/hack-b.svg","r":1.388,"c":"ek"},"zancada":{"a":"art/zancada-a.svg","b":"art/zancada-b.svg","r":0.683,"c":"ek"},"extension":{"a":"art/extension-a.svg","b":"art/extension-b.svg","r":0.648,"c":"ek"},"rumano":{"a":"art/rumano-a.svg","b":"art/rumano-b.svg","r":0.724,"c":"ek"},"rumano_manc":{"a":"art/rumano_manc-a.svg","b":"art/rumano_manc-b.svg","r":0.55,"c":"ek"},"puente_manc":{"a":"art/puente_manc-a.svg","b":"art/puente_manc-b.svg","r":1.707,"c":"ek"},"curl_femoral":{"a":"art/curl_femoral-a.svg","b":"art/curl_femoral-b.svg","r":1.64,"c":"ek"},"abductor":{"a":"art/abductor-a.svg","b":"art/abductor-b.svg","r":0.812,"c":"ek"},"aductor":{"a":"art/aductor-a.svg","b":"art/aductor-b.svg","r":0.82,"c":"ek"},"pantorrilla":{"a":"art/pantorrilla-a.svg","b":"art/pantorrilla-b.svg","r":0.61,"c":"ek"},"pantorrilla_prensa":{"a":"art/pantorrilla_prensa-a.svg","b":"art/pantorrilla_prensa-b.svg","r":1.41,"c":"ek"},"hiperextension":{"a":"art/hiperextension-a.svg","b":"art/hiperextension-b.svg","r":0.879,"c":"ek"},"press_maquina":{"a":"art/press_maquina-a.svg","b":"art/press_maquina-b.svg","r":0.868,"c":"ek"},"press_banca":{"a":"art/press_banca-a.svg","b":"art/press_banca-b.svg","r":0.903,"c":"ek"},"press_manc":{"a":"art/press_manc-a.svg","b":"art/press_manc-b.svg","r":0.734,"c":"ek"},"smith_banca":{"a":"art/smith_banca-a.svg","b":"art/smith_banca-b.svg","r":0.752,"c":"ek"},"inclinado_manc":{"a":"art/inclinado_manc-a.svg","b":"art/inclinado_manc-b.svg","r":0.721,"c":"ek"},"smith_inclinado":{"a":"art/smith_inclinado-a.svg","b":"art/smith_inclinado-b.svg","r":0.777,"c":"ek"},"cruce_poleas":{"a":"art/cruce_poleas-a.svg","b":"art/cruce_poleas-b.svg","r":0.841,"c":"ek"},"aperturas":{"a":"art/aperturas-a.svg","b":"art/aperturas-b.svg","r":0.784,"c":"ek"},"fondos":{"a":"art/fondos-a.svg","b":"art/fondos-b.svg","r":0.504,"c":"ek"},"lagartijas":{"a":"art/lagartijas-a.svg","b":"art/lagartijas-b.svg","r":1.669,"c":"ek"},"jalon":{"a":"art/jalon-a.svg","b":"art/jalon-b.svg","r":0.459,"c":"ek"},"jalon_v":{"a":"art/jalon_v-a.svg","b":"art/jalon_v-b.svg","r":0.473,"c":"ek"},"dominadas":{"a":"art/dominadas-a.svg","b":"art/dominadas-b.svg","r":0.672,"c":"ek"},"remo_sentado":{"a":"art/remo_sentado-a.svg","b":"art/remo_sentado-b.svg","r":1.413,"c":"ek"},"remo_manc":{"a":"art/remo_manc-a.svg","b":"art/remo_manc-b.svg","r":0.88,"c":"ek"},"remo_barra":{"a":"art/remo_barra-a.svg","b":"art/remo_barra-b.svg","r":1.012,"c":"ek"},"pullover":{"a":"art/pullover-a.svg","b":"art/pullover-b.svg","r":0.462,"c":"ek"},"pajaros":{"a":"art/pajaros-a.svg","b":"art/pajaros-b.svg","r":0.989,"c":"ek"},"laterales":{"a":"art/laterales-a.svg","b":"art/laterales-b.svg","r":0.887,"c":"ek"},"curl_manc":{"a":"art/curl_manc-a.svg","b":"art/curl_manc-b.svg","r":0.506,"c":"ek"},"martillo":{"a":"art/martillo-a.svg","b":"art/martillo-b.svg","r":0.487,"c":"ek"},"curl_polea":{"a":"art/curl_polea-a.svg","b":"art/curl_polea-b.svg","r":0.441,"c":"ek"},"curl_cuerda":{"a":"art/curl_cuerda-a.svg","b":"art/curl_cuerda-b.svg","r":0.429,"c":"ek"},"curl_maq":{"a":"art/curl_maq-a.svg","b":"art/curl_maq-b.svg","r":0.683,"c":"ek"},"curl_barra":{"a":"art/curl_barra-a.svg","b":"art/curl_barra-b.svg","r":0.911,"c":"ek"},"triceps_cuerda":{"a":"art/triceps_cuerda-a.svg","b":"art/triceps_cuerda-b.svg","r":0.388,"c":"ek"},"triceps_barra":{"a":"art/triceps_barra-a.svg","b":"art/triceps_barra-b.svg","r":0.392,"c":"ek"},"triceps_manc":{"a":"art/triceps_manc-a.svg","b":"art/triceps_manc-b.svg","r":0.368,"c":"ek"},"triceps_maq":{"a":"art/triceps_maq-a.svg","b":"art/triceps_maq-b.svg","r":0.742,"c":"ek"},"fondos_banco":{"a":"art/fondos_banco-a.svg","b":"art/fondos_banco-b.svg","r":1.382,"c":"ek"},"crunch":{"a":"art/crunch-a.svg","b":"art/crunch-b.svg","r":2.059,"c":"ek"},"elev_piernas":{"a":"art/elev_piernas-a.svg","b":"art/elev_piernas-b.svg","r":1.176,"c":"ek"},"crunch_maq":{"a":"art/crunch_maq-a.svg","b":"art/crunch_maq-b.svg","r":0.494,"c":"ek","cap":"En el dibujo, con polea. En la m\u00e1quina es el mismo movimiento."},"patada_polea":{"a":"art/patada_polea-a.svg","b":"art/patada_polea-b.svg","r":0.713,"c":"ek"},"pec_deck":{"a":"art/pec_deck-a.png","b":"art/pec_deck-b.png","r":0.686,"c":"wg"},"press_hombro_maq":{"a":"art/press_hombro_maq-a.png","b":"art/press_hombro_maq-b.png","r":0.684,"c":"wg"},"press_hombro_manc":{"a":"art/press_hombro_manc-a.png","b":"art/press_hombro_manc-b.png","r":0.614,"c":"wg"},"aperturas_polea":{"a":"art/aperturas_polea-a.png","b":"art/aperturas_polea-b.png","r":0.794,"c":"wg4"},"patada_maq":{"a":"art/patada_polea-a.svg","b":"art/patada_polea-b.svg","r":0.713,"c":"ek","cap":"En el dibujo, con polea y tobillera. En la m\u00e1quina es el mismo movimiento, con el pecho apoyado."},"prensa_h":{"a":"art/prensa-a.svg","b":"art/prensa-b.svg","r":1.416,"c":"ek","cap":"En el dibujo, la prensa inclinada. La horizontal es el mismo movimiento, sentado derecho."},"hip_maq":{"a":"art/puente_manc-a.svg","b":"art/puente_manc-b.svg","r":1.707,"c":"ek","cap":"En el dibujo, en el piso. En la m\u00e1quina es el mismo movimiento, con la espalda apoyada."},"dominada_asist":{"a":"art/dominadas-a.svg","b":"art/dominadas-b.svg","r":0.672,"c":"ek","cap":"En la m\u00e1quina te arrodill\u00e1s en una plataforma que te ayuda a subir."},"fondos_asist":{"a":"art/fondos-a.svg","b":"art/fondos-b.svg","r":0.504,"c":"ek","cap":"En la m\u00e1quina te arrodill\u00e1s en una plataforma que te ayuda a subir."},"crunch_polea":{"a":"art/crunch_maq-a.svg","b":"art/crunch_maq-b.svg","r":0.494,"c":"ek","cap":"En el dibujo, sentado. Tambi\u00e9n se puede hacer arrodillado frente a la polea."}};
+const EQ_ART = {"prensa":"prensa","extension":"extension","curl_femoral":"curl_femoral","abductor":"abductor","pantorrilla":"pantorrilla","smith":"smith_sentadilla","barra":"sentadilla","hack":"hack","mancuernas":"curl_manc","banco":"press_manc","poleas":"cruce_poleas","jalon":"jalon","remo":"remo_sentado","press_pecho":"press_maquina","pec_deck":"pec_deck","press_hombro":"press_hombro_maq","torre":"dominadas","hiperextension":"hiperextension","curl_maq":"curl_maq","triceps_maq":"triceps_maq","colchoneta":"crunch","abs_maq":"crunch_maq","asistida":"dominada_asist","prensa_h":"prensa_h","maq_hip":"hip_maq","gluteo_maq":"patada_maq"};
+const ART_CREDIT = {"ek": "Everkinetic · CC BY-SA 4.0", "wg": "wger.de · CC BY-SA 3.0", "wg4": "wger.de (cshep442) · CC BY-SA 4.0"};
 
 (()=>{
 "use strict";
@@ -1157,7 +1190,8 @@ function pick(slot,used){
     let c=Object.keys(EX).filter(id=>EX[id].pat===pat&&!used.has(id)&&have(EX[id]));
     // personal: primero lo que la persona ya hizo (así el peso progresa), después lo más fácil si recién empieza
     const done=id=>lastFor(id)?0:1;
-    c.sort((a,b)=>done(a)-done(b)||(S.prof.exp==="nuevo"?EX[a].lvl-EX[b].lvl:0));
+    const drawn=id=>hasArt(id)?0:1; // a igual movimiento, el que tiene dibujo (se entiende mejor)
+    c.sort((a,b)=>done(a)-done(b)||drawn(a)-drawn(b)||(S.prof.exp==="nuevo"?EX[a].lvl-EX[b].lvl:0));
     if(c.length)return c[0];
   }
   return null;
@@ -1331,6 +1365,8 @@ const thumb=(id,cls)=>`<span class="th${cls?" "+cls:""}">${artHTML(id)}</span>`;
 function thumbRow(ids,max){max=max||5;const more=ids.length-max;
   const n=Math.min(ids.length,max)+(more>0?1:0);
   return `<span class="thumbs" style="--n:${n}">${ids.slice(0,max).map(id=>thumb(id)).join("")}${more>0?`<span class="th more">+${more}</span>`:""}</span>`}
+// si el dibujo es de otro ejercicio con el mismo movimiento, se aclara la diferencia
+function artCap(id){return hasArt(id)&&ART[id].cap?`<p class="art-cap">${esc(ART[id].cap)}</p>`:""}
 function eqArt(k){const id=typeof EQ_ART!=="undefined"&&EQ_ART[k];return id&&hasArt(id)?artHTML(id):`<div class="art art-ic">${eqPic(k)}</div>`}
 
 /* mapa de músculos: el músculo que trabaja en color fuerte, los que ayudan en suave.
@@ -1370,7 +1406,7 @@ function howSheet(id){
   const ex=EX[id],t=target(ex),sg=suggest(id);
   const uses=ex.eq.map(k=>`<div class="row"><span class="th">${eqArt(k)}</span><span class="name">${esc(EQ[k].n)}<small>${esc(EQ[k].d)}</small></span></div>`).join("")+
     (ex.a?`<div class="row"><span class="th"><div class="art art-ic">${pic(ATT[ex.a].svg)}</div></span><span class="name">${esc(ATT[ex.a].n)}<small>Se engancha en la polea. ${esc(ATT[ex.a].d)}.</small></span></div>`:"");
-  openSheet(`<div class="how-stage">${artHTML(id,{anim:true,eager:true})}</div>
+  openSheet(`<div class="how-stage">${artHTML(id,{anim:true,eager:true})}</div>${artCap(id)}
    <h2>${esc(ex.n)}</h2><p class="sub">${gTag(ex.g)} ${esc(ex.m)}</p>
    <div class="goal" style="margin-top:0"><b>${t.sets} series</b> de ${t.lo}–${t.hi}${t.sec?" segundos":" repeticiones"}${ex.r?` · empezá con <b>${fmtW(sg.w)} ${esc(unitLbl(ex))}</b>`:""}</div>
    <div class="sec-t sm">Paso a paso</div>
@@ -1465,7 +1501,7 @@ function renderHome(){
       <div class="hero-sub">Lo elegiste en tu semana. El músculo crece mientras descansa.</div>
       <a class="hero-go press" href="#/dia/${nd.day}">Entrenar igual · ${esc(D.n.toLowerCase())}</a></div>`;
   else hero=`<div class="hero">
-      <div class="hero-lbl">${lbl}</div><h2>${esc(D.n)}</h2><div class="hero-sub">${esc(D.s)}</div>
+      <a class="hero-top press" href="#/dia/${nd.day}" aria-label="Ver los ejercicios de ${esc(D.n)}"><div class="hero-lbl">${lbl}</div><h2>${esc(D.n)} ${ic("chev",22)}</h2><div class="hero-sub">${esc(D.s)}</div></a>
       ${clash.length?`<div class="hero-warn">${ic("info",16)}<span>${esc(cap(clashText(clash)))}. Te conviene <a href="#/dia/${nextDay().day}">${esc(DAYS[nextDay().day].n.toLowerCase())}</a>.</span></div>`:""}
       <a class="hero-thumbs press" href="#/dia/${nd.day}" aria-label="Ver los ejercicios de hoy">${thumbRow(ids)}</a>
       <div class="hero-meta"><button class="hm press" data-act="time-sheet">${ic("clock",15)} ~${sessMin(ids)} min ${ic("chevd",14)}</button><a class="hm press" href="#/dia/${nd.day}">${ids.length} ejercicios ${ic("chev",14)}</a></div>
@@ -1669,12 +1705,13 @@ function warmHTML(){
   const k=CARDIO.find(c=>S.prof.eq.includes(c));
   const where=k?`en la <b>${esc(EQ[k].n.toLowerCase())}</b>`:"caminando o con saltos suaves";
   const fin=S.prof.goal==="grasa"&&k?` Al terminar, 10 a 15 minutos más ${where}.`:"";
-  return `<span class="th">${k?eqArt(k):`<div class="art art-ic">${ic("bolt",22)}</div>`}</span><p><b>Primero calentá:</b> 5 minutos suaves ${where} y una serie liviana de este ejercicio.${fin}</p>`;
+  const icon=k&&CARDIO_IC[k]?`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${CARDIO_IC[k]}</svg>`:ic("bolt",22);
+  return `<span class="ico" style="--c:#FF9500">${icon}</span><p><b>Primero calentá:</b> 5 minutos suaves ${where} y una serie liviana de este ejercicio.${fin}</p>`;
 }
 function sxBody(i){
   const A=S.active,e=A.ex[i],ex=EX[e.id],warm=i===0&&!A.warmed&&!A.ex.some(x=>x.s.some(s=>s.ok));
   return `${warm?`<div class="warm">${warmHTML()}<button class="icon-btn sm" data-act="warm-ok" aria-label="Entendido">${ic("x",16)}</button></div>`:""}
-   <button class="stage press" data-act="howsheet" data-id="${e.id}">${artHTML(e.id,{anim:true,eager:true})}<span class="stage-pill">${ic("info",15)} Cómo se hace</span></button>
+   <button class="stage press" data-act="howsheet" data-id="${e.id}">${artHTML(e.id,{anim:true,eager:true})}<span class="stage-pill">${ic("info",15)} Cómo se hace</span></button>${artCap(e.id)}
    ${sxRest(i)}`;
 }
 function sxRest(i){
@@ -1909,7 +1946,16 @@ function equipGrid(){
   <div class="sec-t sm">Las máquinas<small>Tocá para marcar o quitar.</small></div>
   <div class="eqgrid">${EQ_ORDER.map(eqBtn).join("")}</div>
   <div class="sec-t sm">Cardio<small>Para calentar antes de entrenar.</small></div>
-  <div class="eqgrid">${CARDIO.map(eqBtn).join("")}</div>`;
+  <div class="group">${CARDIO.map(eqRow).join("")}</div>`;
+}
+// cardio: no hay dibujos libres en el estilo de los ejercicios, así que va como lista con iconos del sistema (como la barra de abajo)
+const CARDIO_IC={caminadora:'<circle cx="14" cy="4.5" r="1.8"/><path d="M9 21l3-5 3 2.2V21M12 16l1.2-5.2 3 2.7h3M13.2 10.8L9.6 12l-2 3"/>',
+  eliptica:'<circle cx="12" cy="4" r="1.7"/><path d="M12 6.5l-1 6 4 2.5 1 6M11 12.5L8 21M10 8.5l5-2.5"/>',
+  escaladora:'<path d="M3 20h4.5v-4.5H12V11h4.5V6.5H21"/>',
+  bici:'<circle cx="6" cy="16.5" r="3.5"/><circle cx="18" cy="16.5" r="3.5"/><path d="M6 16.5L10 9h5l3 7.5M10 9L9 6H7M15 9l1.2-3H18"/>'};
+function eqRow(k){
+  const on=S.prof.eq.includes(k);
+  return `<button class="row eqrow${on?" on":""}" data-act="eq" data-v="${k}" aria-pressed="${on}"><span class="ico" style="--c:#FF9500"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${CARDIO_IC[k]||""}</svg></span><span class="name">${esc(EQ[k].n)}<small>${esc(EQ[k].d)}</small></span><span class="ck">${ic("check",15)}</span></button>`;
 }
 function eqBtn(k){
   const on=S.prof.eq.includes(k);
@@ -2020,7 +2066,7 @@ document.addEventListener("click",e=>{
     case"gym":{const gy=GYMS[v];S.prof.gym=v;S.prof.eq=gy.eq.slice();save();S.done?renderEquip():renderOnboard();toast(`Marqué las máquinas de ${esc(gy.n)}`);break;}
     case"credits":openSheet(`<h2>Créditos</h2><p class="sub">Gracias a quienes comparten su trabajo.</p>
       <div class="card prose" style="font-size:15px"><p><b>Dibujos de los ejercicios</b><br>Everkinetic (everkinetic.com, de Greg Priday). Licencia CC BY-SA 4.0. <a href="https://github.com/everkinetic/data" target="_blank" rel="noopener">github.com/everkinetic/data</a></p>
-      <p>Mariposa, press de hombro en máquina y press de hombro con mancuernas: wger.de, licencia CC BY-SA 3.0. <a href="https://wger.de" target="_blank" rel="noopener">wger.de</a></p>
+      <p>Mariposa, press de hombro en máquina y press de hombro con mancuernas: wger.de, licencia CC BY-SA 3.0. Aperturas invertidas en polea: wger.de, de cshep442, licencia CC BY-SA 4.0. <a href="https://wger.de" target="_blank" rel="noopener">wger.de</a></p>
       <p style="margin:0">Cambios: se quitó el fondo blanco, se recortó el margen y se alinearon las dos posiciones para animarlas. Los dibujos modificados se comparten con la misma licencia.</p></div>
       <div class="card prose" style="font-size:15px;margin-top:12px"><p><b>Dibujo del cuerpo y de los músculos</b><br>react-native-body-highlighter, de ELABBASSI Hicham. Licencia MIT.</p>
       <p style="margin:0"><a href="https://github.com/HichamELBSI/react-native-body-highlighter" target="_blank" rel="noopener">github.com/HichamELBSI/react-native-body-highlighter</a></p></div>

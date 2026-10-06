@@ -413,7 +413,7 @@ a.big{text-decoration:none}
 .ob-dots i{width:7px;height:7px;border-radius:4px;background:var(--fill2);transition:width .45s var(--spring),background .3s}
 .ob-dots i.on{width:22px;background:var(--accent)}
 .ob-step{animation:stepIn .5s var(--ease-out) both}
-.ob-step.back{animation-name:stepBack}
+.ob-step.rev{animation-name:stepBack}
 @keyframes stepIn{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}
 @keyframes stepBack{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:none}}
 .ob h1{font-size:32px;font-weight:900;letter-spacing:-.02em;line-height:1.1;margin:14px 0 6px;text-wrap:balance}
@@ -1540,6 +1540,8 @@ function route(){
   cur={a,h};
 }
 addEventListener("hashchange",route);
+function obBack(){if(ob.i===1)readDataForm();ob={i:Math.max(0,ob.i-1),back:true};renderOnboard();app.scrollTop=0}
+addEventListener("popstate",()=>{if(!S.done&&ob.i>0)obBack()});
 
 /* ---------- Hoy ---------- */
 const dateShort=d=>cap(dateLbl(d));
@@ -1985,6 +1987,14 @@ function readDataForm(){
   const p=S.prof,n=(id,d)=>{const v=parseFloat($(id).value);return isFinite(v)&&v>0?v:d};
   p.age=Math.round(n("#fAge",p.age));p.h=Math.round(n("#fH",p.h));p.w=n("#fW",p.w);
 }
+// un dedo de más al escribir (1400 lb, 17 cm…): se avisa antes de seguir, porque de eso salen los pesos y la comida
+function dataTypo(){
+  const p=S.prof,kg=p.unit==="lb"?p.w*0.4536:p.w;
+  if(p.age<12||p.age>90)return`Revisá tu edad: ${p.age} años parece un error`;
+  if(p.h<120||p.h>230)return`Revisá tu estatura: ${p.h} cm parece un error`;
+  if(kg<30||kg>300)return`Revisá tu peso: ${fmtW(p.w)} ${p.unit} parece un error`;
+  return"";
+}
 function optSheet(title,sub,map,key){
   openSheet(`<h2>${title}</h2><p class="sub">${sub}</p><div class="opts">${Object.keys(map).map(k=>`<button class="opt${S.prof[key]===k?" on":""}" data-act="set-opt" data-key="${key}" data-v="${k}"><div><b>${esc(map[k].n)}</b><span>${esc(map[k].s)}</span></div><span class="rd">${S.prof[key]===k?ic("check",16):""}</span></button>`).join("")}</div>`);
 }
@@ -2104,7 +2114,7 @@ function renderOnboard(){
   else{const sp=SPLITS[p.days];h=`<div class="welcome-art pop-in">${ic("check",64)}</div><h1>Tu rutina está lista</h1><p class="lead">${esc(sp.why)}</p>
     <div class="group">${sp.days.map((d,k)=>`<div class="row"><span class="ico" style="--c:${GROUPS[DAYS[d].g].c}">${ic("dumbbell",18)}</span><span class="name">Día ${k+1} · ${esc(DAYS[d].n)}<small>${esc(DAYS[d].s)}</small></span></div>`).join("")}</div>
     <p class="note">¿Un día querés otra cosa, como pierna? En la pantalla de inicio tocás "Entrenar otra cosa".</p>`}
-  view.innerHTML=`<div class="ob"><div class="ob-dots">${Array.from({length:OB_N},(_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div><div class="ob-step${ob.back?" back":""}">${h}</div></div>`;
+  view.innerHTML=`<div class="ob"><div class="ob-dots">${Array.from({length:OB_N},(_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div><div class="ob-step${ob.back?" rev":""}">${h}</div></div>`;
   setDock(`${i>0?`<button class="big ghost" data-act="ob-back" style="flex:0 0 34%">Atrás</button>`:""}<button class="big" data-act="ob-next">${i===0?"Empezar":i===OB_N-1?"Ver mi entrenamiento":"Siguiente"}</button>`);
 }
 
@@ -2220,11 +2230,14 @@ document.addEventListener("click",e=>{
     case"reset-no":renderProfile();break;
     case"reset":{const del=S.logs.map(l=>l.id).concat(S.del);S=normalize(null);S.del=del;S.t=Date.now();ob={i:0,back:false};save();location.hash="#/";route();break;}
     case"ob-set":{const key=b.dataset.key;S.prof[key]=isNaN(+v)?v:+v;save();renderOnboard();break;}
-    case"ob-back":if(ob.i===1)readDataForm();ob={i:Math.max(0,ob.i-1),back:true};renderOnboard();app.scrollTop=0;break;
+    case"ob-back":if(history.state&&history.state.ob!=null)history.back();else obBack();break;
     case"ob-next":
-      if(ob.i===1)readDataForm();
+      if(ob.i===1){readDataForm();const bad=dataTypo();if(bad){toast(bad);break}}
       if(ob.i>=OB_N-1){S.done=true;P.set("todayMin",S.prof.min);save();location.hash="#/";route();break;}
-      ob={i:ob.i+1,back:false};save();renderOnboard();app.scrollTop=0;break;
+      ob={i:ob.i+1,back:false};save();
+      // cada paso queda en el historial: el botón "atrás" del teléfono vuelve un paso en vez de cerrar la app
+      try{history.pushState({ob:ob.i},"")}catch(e){}
+      renderOnboard();app.scrollTop=0;break;
   }
 });
 document.addEventListener("change",e=>{
